@@ -1,33 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".View.MainActivity">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/tools">
 
-    <android.support.design.widget.AppBarLayout
+    <data>
+
+        <variable
+            name="viewModel"
+            type="ma.fstm.ilisi.pico.picomobile.viewmodel.LoginViewModel" />
+    </data>
+
+
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:layout_height="match_parent">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="8dp"
+            android:orientation="vertical">
 
-    </android.support.design.widget.AppBarLayout>
+            <EditText
+                android:id="@+id/inEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:afterTextChanged="@{(editable)->viewModel.afterEmailTextChanged(editable)}"
+                android:hint="Email"
+                android:inputType="textEmailAddress"
+                android:padding="8dp" />
 
-    <include layout="@layout/content_main" />
+            <EditText
+                android:id="@+id/inPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:afterTextChanged="@{(editable)->viewModel.afterPasswordTextChanged(editable)}"
+                android:hint="Password"
+                android:inputType="textPassword"
+                android:padding="8dp" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
 
-</android.support.design.widget.CoordinatorLayout>
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:onClick="@{()-> viewModel.onLoginClicked()}"
+                android:text="LOGIN"
+                bind:toastMessage="@{viewModel.toastMessage}" />
+
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</layout>
