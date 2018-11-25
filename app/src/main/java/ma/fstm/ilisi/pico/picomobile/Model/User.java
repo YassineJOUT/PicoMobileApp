@@ -1,27 +1,28 @@
 package ma.fstm.ilisi.pico.picomobile.Model;
 
+
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Patterns;
 
 public class User {
     @NonNull
-    private String mEmail;
+    private String mPhoneNumber;
     @NonNull
     private String mPassword;
 
-    public User(@NonNull final String email, @NonNull final String password) {
-        mEmail = email;
+    public User(@NonNull final String PhoneNumber, @NonNull final String password) {
+        mPhoneNumber = PhoneNumber;
         mPassword = password;
     }
 
     @NonNull
-    public String getEmail() {
-        return mEmail;
+    public String getmPhoneNumber() {
+        return mPhoneNumber;
     }
 
-    public void setEmail(@NonNull final String email) {
-        mEmail = email;
+    public void setmPhoneNumber(@NonNull String mPhoneNumber) {
+        this.mPhoneNumber = mPhoneNumber;
     }
 
     @NonNull
@@ -34,6 +35,6 @@ public class User {
     }
 
     public boolean isInputDataValid() {
-        return !TextUtils.isEmpty(getEmail()) && Patterns.EMAIL_ADDRESS.matcher(getEmail()).matches() && getPassword().length() > 5;
+        return !TextUtils.isEmpty(getmPhoneNumber()) && Patterns.PHONE.matcher(getmPhoneNumber()).matches() && getPassword().length() > 5;
     }
 }
