@@ -1,14 +1,18 @@
 package ma.fstm.ilisi.pico.picomobile.View;
 
+import android.content.Intent;
 import android.databinding.BindingAdapter;
 import android.databinding.DataBindingUtil;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 
+import ma.fstm.ilisi.pico.picomobile.Model.Hospitals;
 import ma.fstm.ilisi.pico.picomobile.R;
+import ma.fstm.ilisi.pico.picomobile.Utilities.ConfigClass;
 import ma.fstm.ilisi.pico.picomobile.databinding.ActivityMainBinding;
 import ma.fstm.ilisi.pico.picomobile.viewmodel.LoginViewModel;
 
@@ -22,11 +26,27 @@ public class MainActivity extends AppCompatActivity {
         activityMainBinding.setViewModel(new LoginViewModel());
         activityMainBinding.executePendingBindings();
 
+        Button btn = (Button)findViewById(R.id.SignUpBtn);
+
+        btn.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this,SignupActivity.class));
+            }
+        });
+
+        if(ConfigClass.isLoggedIn){
+            startActivity(new Intent(MainActivity.this,Hospitals.class));
+        }
+
     }
 
     @BindingAdapter({"toastMessage"})
     public static void runMe(View view, String message) {
         if (message != null)
             Toast.makeText(view.getContext(), message, Toast.LENGTH_SHORT).show();
+
+
     }
 }

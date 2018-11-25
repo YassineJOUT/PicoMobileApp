@@ -8,8 +8,8 @@ public class PicoWebRestClient  {
     // Asynchronous Http client
     private static AsyncHttpClient client = new AsyncHttpClient();
     // adding the content type to the header
-    public  static void setUp(){
-        client.addHeader("content-type","application/x-www-form-urlencoded");
+    public  static void setUp(String header,String value){
+        client.addHeader(header,value);
     }
     // Get function
     public static void get(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {

@@ -9,9 +9,7 @@ public class Citizen {
     @NonNull
     private String full_name ;
     @NonNull
-    private double latitude ;
-    @NonNull
-    private double longitude ;
+    private GpsCoordinates coordinates ;
     @NonNull
     private String phone_number ;
     @NonNull
@@ -19,23 +17,19 @@ public class Citizen {
 
     private Image image ;
 
-    public Citizen(@NonNull final String full_name,@NonNull final double latitude,
-                   @NonNull final double longitude,@NonNull final String phone_number,
-                   @NonNull final String password,  final Image image) {
-       this.full_name=full_name;
-       this.latitude = latitude;
-       this.longitude = longitude;
-       this.phone_number = phone_number;
-       this.password = password;
-       this.image = image;
+    public Citizen(@NonNull String full_name, @NonNull GpsCoordinates coordinates,
+                   @NonNull String phone_number, @NonNull String password, Image image) {
+        this.full_name = full_name;
+        this.coordinates = coordinates;
+        this.phone_number = phone_number;
+        this.password = password;
+        this.image = image;
     }
 
-    public Citizen(@NonNull final String full_name,@NonNull final double latitude,
-                   @NonNull final double longitude,@NonNull final String phone_number,
-                   @NonNull final String password) {
-        this.full_name=full_name;
-        this.latitude = latitude;
-        this.longitude = longitude;
+    public Citizen(@NonNull String full_name, @NonNull GpsCoordinates coordinates,
+                   @NonNull String phone_number, @NonNull String password) {
+        this.full_name = full_name;
+        this.coordinates = coordinates;
         this.phone_number = phone_number;
         this.password = password;
     }
@@ -50,21 +44,12 @@ public class Citizen {
     }
 
     @NonNull
-    public double getLatitude() {
-        return latitude;
+    public GpsCoordinates getCoordinates() {
+        return coordinates;
     }
 
-    public void setLatitude(@NonNull double latitude) {
-        this.latitude = latitude;
-    }
-
-    @NonNull
-    public double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(@NonNull double longitude) {
-        this.longitude = longitude;
+    public void setCoordinates(@NonNull GpsCoordinates coordinates) {
+        this.coordinates = coordinates;
     }
 
     @NonNull
@@ -93,4 +78,10 @@ public class Citizen {
         this.image = image;
     }
 
+    public boolean isDataInputValid(){
+
+        return !TextUtils.isEmpty(getPhone_number()) &&
+                Patterns.PHONE.matcher(getPhone_number()).matches() && getPassword().length() > 4
+                ;
+    }
 }

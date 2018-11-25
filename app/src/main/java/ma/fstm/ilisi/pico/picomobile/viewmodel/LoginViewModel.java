@@ -26,7 +26,6 @@ public class LoginViewModel extends BaseObservable {
         return toastMessage;
     }
 
-
     private void setToastMessage(String toastMessage) {
 
         this.toastMessage = toastMessage;
@@ -37,7 +36,7 @@ public class LoginViewModel extends BaseObservable {
         user = new User("", "");
     }
 
-    public void afterEmailTextChanged(CharSequence s) {
+    public void afterPhoneTextChanged(CharSequence s) {
         user.setmPhoneNumber(s.toString());
     }
 
@@ -90,5 +89,6 @@ public class LoginViewModel extends BaseObservable {
             setToastMessage(errorMessage);
         }
             //setToastMessage(errorMessage);
+
     }
 }
