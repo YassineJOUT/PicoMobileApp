@@ -4,6 +4,8 @@ import android.databinding.BaseObservable;
 import android.databinding.Bindable;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 
 import com.android.databinding.library.baseAdapters.BR;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -22,6 +24,7 @@ import java.util.ListIterator;
 import cz.msebera.android.httpclient.Header;
 import ma.fstm.ilisi.pico.picomobile.Model.Citizen;
 import ma.fstm.ilisi.pico.picomobile.Model.Hospitals;
+import ma.fstm.ilisi.pico.picomobile.R;
 import ma.fstm.ilisi.pico.picomobile.Utilities.ConfigClass;
 import ma.fstm.ilisi.pico.picomobile.Utilities.PicoWebRestClient;
 
@@ -54,8 +57,9 @@ public class HospitalsViewModel extends BaseObservable {
         hospitalsList = new ArrayList<Hospitals>();
     }
 
-    public void onSignUpClicked(){
+    public void onRefreshClicked(View view){
 
+        Log.e("Response in Error" ,ConfigClass.isLoggedIn+"");
         if(ConfigClass.isLoggedIn){
 
             PicoWebRestClient.setUp("Authorization",ConfigClass.token);
@@ -85,9 +89,9 @@ public class HospitalsViewModel extends BaseObservable {
                         //  ConfigClass.token = responseString.getString("");
 
                         //  ConfigClass.isLoggedIn = true;
+                        String content = responseString.getString("hospitals").toString()+"";
+                        Log.e("Response in success" ,content);
 
-                        Log.e("Response in success" ,responseString.getString("hospitals")+"dlkfjlsd");
-                        // StartActivity(SignupActivity.this,MainActivity.class);
 
                     } catch (JSONException e) {
 

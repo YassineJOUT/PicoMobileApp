@@ -3,6 +3,7 @@ package ma.fstm.ilisi.pico.picomobile.viewmodel;
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
 import android.util.Log;
+import android.view.View;
 
 import com.android.databinding.library.baseAdapters.BR;
 import com.loopj.android.http.JsonHttpResponseHandler;
