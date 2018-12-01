@@ -8,13 +8,10 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
-
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import cz.msebera.android.httpclient.Header;
 import ma.fstm.ilisi.pico.picomobile.Utilities.ConfigClass;
 import ma.fstm.ilisi.pico.picomobile.Utilities.PicoWebRestClient;
@@ -25,7 +22,6 @@ import ma.fstm.ilisi.pico.picomobile.View.HospitalsActivity;
  * This class alow a user to authenticate, command an ambulance...
  *
  * @author      Yassine jout
- * @author      Arthur van Hoff
  * @version     1.0
  */
 public class Citizen {
@@ -84,7 +80,6 @@ public class Citizen {
         this.phone_number = phone_number;
         this.password = password;
     }
-
     /**
      * full name getter
      * @return the full name of the citizen
@@ -100,7 +95,6 @@ public class Citizen {
     public void setFull_name(@NonNull String full_name) {
         this.full_name = full_name;
     }
-
     /**
      * gps coordinates getter
      * @return coordinates representing the current localisation of a citizen
@@ -109,7 +103,6 @@ public class Citizen {
     public GpsCoordinates getCoordinates() {
         return coordinates;
     }
-
     /**
      * sets the current position of a citizen
      * @param coordinates
