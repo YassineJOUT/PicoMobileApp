@@ -1,20 +1,16 @@
 package ma.fstm.ilisi.pico.picomobile.viewmodel;
 
-import org.json.*;
-import com.loopj.android.http.*;
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
-import android.util.Log;
+import android.view.View;
 
 import com.android.databinding.library.baseAdapters.BR;
-import cz.msebera.android.httpclient.Header;
-import ma.fstm.ilisi.pico.picomobile.Model.User;
-import ma.fstm.ilisi.pico.picomobile.Utilities.ConfigClass;
-import ma.fstm.ilisi.pico.picomobile.Utilities.PicoWebRestClient;
+
+import ma.fstm.ilisi.pico.picomobile.Model.Citizen;
 
 public class LoginViewModel extends BaseObservable {
 
-    private User user;
+    private Citizen citizen;
     private String successMessage = "Login was successful";
     private String errorMessage = "Phone Number or Password not valid";
 
@@ -33,62 +29,25 @@ public class LoginViewModel extends BaseObservable {
     }
 
     public LoginViewModel() {
-        user = new User("", "");
+        citizen = new Citizen("", "");
     }
 
     public void afterPhoneTextChanged(CharSequence s) {
-        user.setmPhoneNumber(s.toString());
+        citizen.setPhone_number(s.toString());
     }
 
     public void afterPasswordTextChanged(CharSequence s) {
-        user.setPassword(s.toString());
+        citizen.setPassword(s.toString());
     }
 
-    public void onLoginClicked() {
+    public void onLoginClicked(View view) {
 
-        if (user.isInputDataValid()){
+        if (citizen.isDataInputValid()){
 
-            RequestParams params = new RequestParams();
-
-            params.put("phone_number", user.getmPhoneNumber());
-
-            params.put("password", user.getPassword());
-
-            Log.e("Phone",user.getmPhoneNumber());
-
-            PicoWebRestClient.setUp();
-
-            PicoWebRestClient.post("citizens/signin", params, new JsonHttpResponseHandler() {
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-
-                    ConfigClass.token = "";
-
-                    ConfigClass.isLoggedIn = false;
-
-                    Log.e("Response on failure",responseString+"ldkjfskdj");
-                }
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject responseString) {
-                    try {
-
-                        ConfigClass.token = responseString.getString("token");
-
-                        ConfigClass.isLoggedIn = true;
-
-                        Log.e("Response in success" ,responseString.getString("token")+"dlkfjlsd");
-
-                    } catch (JSONException e) {
-
-                        e.printStackTrace();
-                    }
-                }
-            });
+            citizen.SignIn(view);
         }
         else{
             setToastMessage(errorMessage);
         }
-            //setToastMessage(errorMessage);
-
     }
 }

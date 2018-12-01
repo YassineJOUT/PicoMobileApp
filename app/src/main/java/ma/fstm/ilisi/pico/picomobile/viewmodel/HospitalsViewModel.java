@@ -2,47 +2,42 @@ package ma.fstm.ilisi.pico.picomobile.viewmodel;
 
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
-import android.support.annotation.NonNull;
 import android.util.Log;
+import android.view.View;
 
 import com.android.databinding.library.baseAdapters.BR;
 import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 import cz.msebera.android.httpclient.Header;
-import ma.fstm.ilisi.pico.picomobile.Model.Citizen;
-import ma.fstm.ilisi.pico.picomobile.Model.Hospitals;
+import ma.fstm.ilisi.pico.picomobile.Model.Hospital;
 import ma.fstm.ilisi.pico.picomobile.Utilities.ConfigClass;
 import ma.fstm.ilisi.pico.picomobile.Utilities.PicoWebRestClient;
-
+/**
+ * HospitalsViewModel class
+ * This class is responsible for data binding and data observable with the view
+ *
+ * @author      Yassine jout
+ * @version     1.0
+ */
 public class HospitalsViewModel extends BaseObservable {
 
-
-
-    private List<Hospitals> hospitalsList;
-
+    private List<Hospital> hospitalList;
     private String successMessage = "Sign in was successful";
     private String errorMessage = "field invalid not valid";
-
 
     @Bindable
     public String toastMessage = null;
 
-
     public String getToastMessage() {
         return toastMessage;
     }
-
 
     private void setToastMessage(String toastMessage) {
 
@@ -51,11 +46,12 @@ public class HospitalsViewModel extends BaseObservable {
     }
 
     public HospitalsViewModel() {
-        hospitalsList = new ArrayList<Hospitals>();
+        hospitalList = new ArrayList<Hospital>();
     }
 
-    public void onSignUpClicked(){
+    public void onRefreshClicked(View view){
 
+        Log.e("Response in Error" ,ConfigClass.isLoggedIn+"");
         if(ConfigClass.isLoggedIn){
 
             PicoWebRestClient.setUp("Authorization",ConfigClass.token);
@@ -85,9 +81,9 @@ public class HospitalsViewModel extends BaseObservable {
                         //  ConfigClass.token = responseString.getString("");
 
                         //  ConfigClass.isLoggedIn = true;
+                        String content = responseString.getString("hospitals").toString()+"";
+                        Log.e("Response in success" ,content);
 
-                        Log.e("Response in success" ,responseString.getString("hospitals")+"dlkfjlsd");
-                        // StartActivity(SignupActivity.this,MainActivity.class);
 
                     } catch (JSONException e) {
 
