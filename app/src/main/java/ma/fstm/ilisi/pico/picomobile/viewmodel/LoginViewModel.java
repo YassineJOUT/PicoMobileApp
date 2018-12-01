@@ -7,7 +7,6 @@ import android.view.View;
 import com.android.databinding.library.baseAdapters.BR;
 
 import ma.fstm.ilisi.pico.picomobile.Model.Citizen;
-import ma.fstm.ilisi.pico.picomobile.Model.User;
 
 public class LoginViewModel extends BaseObservable {
 
