@@ -3,6 +3,7 @@ package ma.fstm.ilisi.pico.picomobile.viewmodel;
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
 import android.util.Log;
+import android.view.View;
 
 import com.android.databinding.library.baseAdapters.BR;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -15,8 +16,13 @@ import cz.msebera.android.httpclient.Header;
 import ma.fstm.ilisi.pico.picomobile.Model.Citizen;
 import ma.fstm.ilisi.pico.picomobile.Model.GpsCoordinates;
 import ma.fstm.ilisi.pico.picomobile.Utilities.PicoWebRestClient;
-
-
+/**
+ * SignupViewModel class
+ * This class is responsible for data binding and data observable with the Signup view
+ *
+ * @author      Yassine jout
+ * @version     1.0
+ */
 public class SignupViewModel extends BaseObservable {
 
 
@@ -46,86 +52,67 @@ public class SignupViewModel extends BaseObservable {
         citizen = new Citizen("",new GpsCoordinates(0,0),"","",null);
         password = "";
     }
-    public void afterImageChanged(CharSequence s) {
-        citizen.setPhone_number(s.toString());
+    /**
+     * Method afterImageChanged
+     * After the image entry is changed in the sign up activity this method attributes the values typed
+     * into the image field of a citizen
+     * @param image char sequence representing
+     */
+    public void afterImageChanged(CharSequence image) {
+        citizen.setPhone_number(image.toString());
     }
-    public void afterPassword2TextChanged(CharSequence s) {
-        password = s.toString();
+    /**
+     * Method afterPassword2TextChanged
+     * After the password2 entry is changed in the sign up activity this method attributes the values typed
+     * into the password field of a this class
+     * @param password2 char sequence representing
+     */
+    public void afterPassword2TextChanged(CharSequence password2) {
+        password = password2.toString();
     }
-    public void afterPasswordTextChanged(CharSequence s) {
-        citizen.setPassword(s.toString());
+    /**
+     * Method afterPasswordTextChanged
+     * After the password entry is changed in the sign up activity this method attributes the values typed
+     * into the password field of a citizen
+     * @param Password char sequence representing
+     */
+    public void afterPasswordTextChanged(CharSequence Password) {
+        citizen.setPassword(Password.toString());
     }
-    public void afterFullNameTextChanged(CharSequence s) {
-        citizen.setFull_name(s.toString());
+    /**
+     * Method afterFullNameTextChanged
+     * After the fullName entry is changed in the sign up activity this method attributes the values typed
+     * into the fullName field of a citizen
+     * @param fullName char sequence representing
+     */
+    public void afterFullNameTextChanged(CharSequence fullName) {
+        citizen.setFull_name(fullName.toString());
     }
+    /**
+     * Method afterPhoneTextChanged
+     * After the phone entry is changed in the sign up activity this method attributes the values typed
+     * into the phone field of a citizen
+     * @param phone char sequence representing
+     */
+    public void afterPhoneTextChanged(CharSequence phone) {
+        citizen.setPhone_number(phone.toString());
+    }
+    /**
+     * Method onSignUpClicked
+     * This method handles the click on the SignUp button
+     * if all typed data are valid then this method calls the signUP method
+     * located in the citizen class
+     * @param view the view parameter is used to start a new intent to navigate to another activity
+     *             when the signUp succeeded
+     */
+    public void onSignUpClicked(View view){
 
-    public void afterPhoneTextChanged(CharSequence s) {
-        citizen.setPhone_number(s.toString());
-    }
-    public void onSignUpClicked(){
-        Log.e("Is valide " , citizen.isDataInputValid()+"");
         if(citizen.isDataInputValid() && citizen.getPassword().equals(password)){
 
-            RequestParams params = new RequestParams();
-
-            params.put("full_name", citizen.getFull_name());
-
-            params.put("latitude", citizen.getCoordinates().getLatitude());
-
-            params.put("longitude", citizen.getCoordinates().getLongitude());
-
-            params.put("phone_number", citizen.getPhone_number());
-
-            params.put("password", citizen.getPassword());
-
-            Log.e("Full name",citizen.getFull_name());
-
-            PicoWebRestClient.setUp("Content-Type","application/x-www-form-urlencoded");
-
-            PicoWebRestClient.post("citizens/signup", params, new JsonHttpResponseHandler() {
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-
-                    try {
-
-                        //  ConfigClass.token = responseString.getString("");
-
-                        //  ConfigClass.isLoggedIn = true;
-
-                         Log.e("Response in Error" ,errorResponse.getString("error")+"dlkfjlsd");
-                        //  StartActivity(SignupActivity.this,MainActivity.class);
-                        setToastMessage(errorMessage);
-
-                    } catch (JSONException e) {
-
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject responseString) {
-                    try {
-
-                      //  ConfigClass.token = responseString.getString("");
-
-                      //  ConfigClass.isLoggedIn = true;
-
-                       Log.e("Response in success" ,responseString.getString("_id")+"dlkfjlsd");
-                      // StartActivity(SignupActivity.this,MainActivity.class);
-
-                    } catch (JSONException e) {
-
-                        e.printStackTrace();
-                    }
-                }
-            });
+                citizen.SignUp(view);
         }
         else{
-            Log.e("Full name",citizen.getFull_name());
-            Log.e("Password",citizen.getPassword());
-            Log.e("Password2",password);
+
             setToastMessage(errorMessage);
         }
     }
