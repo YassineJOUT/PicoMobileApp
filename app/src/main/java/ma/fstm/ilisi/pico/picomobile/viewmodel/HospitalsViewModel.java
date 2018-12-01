@@ -21,7 +21,7 @@ import ma.fstm.ilisi.pico.picomobile.Utilities.ConfigClass;
 import ma.fstm.ilisi.pico.picomobile.Utilities.PicoWebRestClient;
 /**
  * HospitalsViewModel class
- * This class is responsible for data binding and data observable with the view
+ * This class is responsible for data binding and data observable with the hospitals view
  *
  * @author      Yassine jout
  * @version     1.0

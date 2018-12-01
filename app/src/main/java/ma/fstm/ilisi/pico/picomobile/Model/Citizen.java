@@ -229,4 +229,64 @@ public class Citizen {
             }
         });
     }
+    /**
+     * SignUp function
+     */
+    public void SignUp(View view){
+        // adding typed data into http request parameters
+        RequestParams params = new RequestParams();
+
+        params.put("full_name", this.getFull_name());
+
+        params.put("latitude", this.getCoordinates().getLatitude());
+
+        params.put("longitude", this.getCoordinates().getLongitude());
+
+        params.put("phone_number", this.getPhone_number());
+
+        params.put("password", this.getPassword());
+        /* adding content type header to the http packet*/
+        PicoWebRestClient.setUp("Content-Type","application/x-www-form-urlencoded");
+        /* calling post function to interrogate picoweb API */
+        PicoWebRestClient.post("citizens/signup", params, new JsonHttpResponseHandler() {
+            /*if the call return failure response*/
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+
+                try {
+
+                    //  ConfigClass.token = responseString.getString("");
+
+                    //  ConfigClass.isLoggedIn = true;
+
+                    Log.e("Response in Error" ,errorResponse.getString("error")+"dlkfjlsd");
+                    //  StartActivity(SignupActivity.this,MainActivity.class);
+                    //setToastMessage(errorMessage);
+
+                } catch (JSONException e) {
+
+                    e.printStackTrace();
+                }
+            }
+            /*if the call return success response*/
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject responseString) {
+                try {
+
+                    //  ConfigClass.token = responseString.getString("");
+
+                    //  ConfigClass.isLoggedIn = true;
+
+                    Log.e("Response in success" ,responseString.getString("_id")+"dlkfjlsd");
+                    // StartActivity(SignupActivity.this,MainActivity.class);
+
+                } catch (JSONException e) {
+
+                    e.printStackTrace();
+                }
+            }
+        });
+
+    }
 }
