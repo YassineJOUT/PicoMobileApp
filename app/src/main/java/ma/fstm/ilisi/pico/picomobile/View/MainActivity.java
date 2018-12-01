@@ -12,7 +12,6 @@ import android.widget.Button;
 import android.widget.Toast;
 
 
-import ma.fstm.ilisi.pico.picomobile.Model.Hospitals;
 import ma.fstm.ilisi.pico.picomobile.R;
 import ma.fstm.ilisi.pico.picomobile.Utilities.ConfigClass;
 import ma.fstm.ilisi.pico.picomobile.databinding.ActivityMainBinding;
