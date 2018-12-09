@@ -6,12 +6,15 @@ import android.util.Log;
 import android.view.View;
 
 import com.android.databinding.library.baseAdapters.BR;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +51,6 @@ public class HospitalsViewModel extends BaseObservable {
     public HospitalsViewModel() {
         hospitalList = new ArrayList<Hospital>();
     }
-
     public void onRefreshClicked(View view){
 
         Log.e("Response in Error" ,ConfigClass.isLoggedIn+"");
@@ -81,9 +83,14 @@ public class HospitalsViewModel extends BaseObservable {
                         //  ConfigClass.token = responseString.getString("");
 
                         //  ConfigClass.isLoggedIn = true;
-                        String content = responseString.getString("hospitals").toString()+"";
-                        Log.e("Response in success" ,content);
+                        List<Hospital> hospitals = new ArrayList<>();
+                        Gson gson = new Gson();
 
+                        String content = responseString.getString("hospitals").toString()+"";
+                        Type listType = new TypeToken<List<Hospital>>() {}.getType();
+                        hospitals = gson.fromJson(content,listType);
+                        Log.e("Response in success" ,content);
+                        Log.e("Response in success" ,hospitals.get(1).toString());
 
                     } catch (JSONException e) {
 
