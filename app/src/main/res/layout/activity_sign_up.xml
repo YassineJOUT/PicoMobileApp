@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:bind="http://schemas.android.com/tools">
 
     <data>
 
         <variable
             name="viewModel"
-            type="ma.fstm.ilisi.pico.picomobile.viewmodel.LoginViewModel" />
+            type="ma.fstm.ilisi.pico.picomobile.viewmodel.SignupViewModel" />
     </data>
 
 
@@ -22,11 +23,20 @@
             android:orientation="vertical">
 
             <EditText
-                android:id="@+id/inEmail"
+                android:id="@+id/inFullname"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:afterTextChanged="@{(editable)->viewModel.afterFullNameTextChanged(editable)}"
+                android:hint="Full name"
+                android:inputType="textPersonName" />
+
+            <EditText
+                android:id="@+id/inPhone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:afterTextChanged="@{(editable)->viewModel.afterPhoneTextChanged(editable)}"
-                android:hint="Email"
+                android:hint="Phone number"
                 android:inputType="textEmailAddress"
                 android:padding="8dp" />
 
@@ -40,19 +50,23 @@
                 android:padding="8dp" />
 
 
+            <EditText
+                android:id="@+id/inPassword1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:afterTextChanged="@{(editable)->viewModel.afterPassword2TextChanged(editable)}"
+                android:hint="Conf Password"
+                android:inputType="textPassword"
+                android:padding="8dp" />
+
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:onClick="@{(v)-> viewModel.onLoginClicked(v)}"
-                android:text="LOGIN"
+                android:onClick="@{(v)-> viewModel.onSignUpClicked(v)}"
+                android:text="Sign Up"
                 bind:toastMessage="@{viewModel.toastMessage}" />
-
-            <Button
-                android:id="@+id/SignUpBtn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Sign Up" />
 
 
         </LinearLayout>
