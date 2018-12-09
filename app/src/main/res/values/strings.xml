@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">PicoMobile</string>
+    <string name="PicoMapsApiKey">AIzaSyCKbz6u2K6aGHpoocmCzgj3VKIqvPgHO-E</string>
     <string name="action_settings">Settings</string>
 </resources>
