@@ -16,6 +16,7 @@ import cz.msebera.android.httpclient.Header;
 import ma.fstm.ilisi.pico.picomobile.Utilities.ConfigClass;
 import ma.fstm.ilisi.pico.picomobile.Utilities.PicoWebRestClient;
 import ma.fstm.ilisi.pico.picomobile.View.HospitalsActivity;
+import ma.fstm.ilisi.pico.picomobile.View.MapsActivity;
 
 /**
  * Citizen is a business logic class
@@ -220,7 +221,7 @@ public class Citizen {
                     Log.e("Response in success" ,responseString.getString("token")+"");
                     /* Opening hospitals list activity*/
                     Context context = view.getContext();
-                    Intent intent = new Intent(context, HospitalsActivity.class);
+                    Intent intent = new Intent(context, MapsActivity.class);
                     context.startActivity(intent);
 
                 } catch (JSONException e) {

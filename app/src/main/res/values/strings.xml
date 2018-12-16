@@ -2,4 +2,6 @@
     <string name="app_name">PicoMobile</string>
     <string name="PicoMapsApiKey">AIzaSyCKbz6u2K6aGHpoocmCzgj3VKIqvPgHO-E</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="title_activity_maps2">Map</string>
 </resources>
