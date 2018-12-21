@@ -230,7 +230,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
             }
         });
-       // startActivity(new Intent(this,HospitalsActivity.class));
+        startActivity(new Intent(this, AmbulanceListActivity.class));
         return false;
     }
 }
