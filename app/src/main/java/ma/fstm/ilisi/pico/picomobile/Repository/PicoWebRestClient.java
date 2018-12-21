@@ -1,4 +1,4 @@
-package ma.fstm.ilisi.pico.picomobile.Utilities;
+package ma.fstm.ilisi.pico.picomobile.Repository;
 
 import com.loopj.android.http.*;
 

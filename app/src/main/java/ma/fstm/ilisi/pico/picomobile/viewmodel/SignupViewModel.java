@@ -2,20 +2,13 @@ package ma.fstm.ilisi.pico.picomobile.viewmodel;
 
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
-import android.util.Log;
 import android.view.View;
 
 import com.android.databinding.library.baseAdapters.BR;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import cz.msebera.android.httpclient.Header;
 import ma.fstm.ilisi.pico.picomobile.Model.Citizen;
 import ma.fstm.ilisi.pico.picomobile.Model.GpsCoordinates;
-import ma.fstm.ilisi.pico.picomobile.Utilities.PicoWebRestClient;
+
 /**
  * SignupViewModel class
  * This class is responsible for data binding and data observable with the Signup view

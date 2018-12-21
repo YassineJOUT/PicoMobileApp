@@ -16,7 +16,7 @@ import ma.fstm.ilisi.pico.picomobile.R;
 import ma.fstm.ilisi.pico.picomobile.Utilities.ConfigClass;
 import ma.fstm.ilisi.pico.picomobile.databinding.ActivityMainBinding;
 import ma.fstm.ilisi.pico.picomobile.viewmodel.LoginViewModel;
-
+import  ma.fstm.ilisi.pico.picomobile.Utilities.*;
 
 public class MainActivity extends AppCompatActivity {
     private static Context mContext;
@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this,HospitalsActivity.class));
             }
         });
-
+        startActivity(new Intent(this, LoginActivity.class));
 
 
     }
@@ -66,10 +66,5 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    }
-
-    public static void goToActivity(Context mContext) {
-        Intent activity = new Intent(mContext, HospitalsActivity.class);
-        mContext.startActivity(activity);
     }
 }

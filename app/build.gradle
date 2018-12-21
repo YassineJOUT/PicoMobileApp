@@ -43,6 +43,8 @@ android {
 }
 
 dependencies {
+    def lifecycle_version = "1.1.1"
+    def dagger_version = "2.11"
     implementation "com.android.support:appcompat-v7:27.0.2"
     implementation "com.android.support:design:27.0.2"
     implementation "com.android.support:mediarouter-v7:27.0.2"
@@ -60,7 +62,12 @@ dependencies {
     }
     implementation 'com.loopj.android:android-async-http:1.4.9'
     implementation "com.google.android.gms:play-services-maps:16.0.0"
-    implementation "com.google.android.gms:play-services-places:16.0.0"
+    implementation "com.google.android.gms:play-services-location:16.0.0"
     implementation 'com.google.firebase:firebase-core:16.0.0'
-
+    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
+    implementation "android.arch.lifecycle:extensions:$lifecycle_version"
+    annotationProcessor "android.arch.lifecycle:compiler:$lifecycle_version"
+    implementation 'com.google.maps.android:android-maps-utils:0.4'
+    implementation 'am.appwise.components:NoInternetDialog:1.1.3'
 }

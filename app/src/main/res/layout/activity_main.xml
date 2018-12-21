@@ -44,9 +44,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:onClick="@{(v)-> viewModel.onLoginClicked(v)}"
-                android:text="LOGIN"
-                bind:toastMessage="@{viewModel.toastMessage}" />
+                android:text="LOGIN" />
 
             <Button
                 android:id="@+id/SignUpBtn"

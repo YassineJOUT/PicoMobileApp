@@ -14,27 +14,27 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
+import java.nio.file.AtomicMoveNotSupportedException;
 import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
+import ma.fstm.ilisi.pico.picomobile.Model.Ambulance;
 import ma.fstm.ilisi.pico.picomobile.Model.Hospital;
-import ma.fstm.ilisi.pico.picomobile.Utilities.ConfigClass;
 import ma.fstm.ilisi.pico.picomobile.Repository.PicoWebRestClient;
-/**
- * HospitalsViewModel class
- * This class is responsible for data binding and data observable with the hospitals view
- *
- * @author      Yassine jout
- * @version     1.0
- */
-public class HospitalsViewModel extends ViewModel {
+import ma.fstm.ilisi.pico.picomobile.Utilities.ConfigClass;
+
+public class AmbulanceViewModel  extends ViewModel {
 
 
-    public LiveData<List<Hospital>> getHospitalList() {
-        return hospitalList;
+    public LiveData<List<Ambulance>> getAmbulances() {
+        return ambulances;
     }
 
-    private LiveData<List<Hospital>> hospitalList;
+    public void setAmbulances(LiveData<List<Ambulance>> ambulances) {
+        this.ambulances = ambulances;
+    }
+
+    private LiveData<List<Ambulance>> ambulances;
     private String successMessage = "Sign in was successful";
     private String errorMessage = "field invalid not valid";
     LiveData<List<Hospital>> hospitals ;
@@ -42,30 +42,29 @@ public class HospitalsViewModel extends ViewModel {
 
 
 
-    public HospitalsViewModel() {
+    public AmbulanceViewModel() {
 
 
     }
 
-    public LiveData<List<Hospital>> onRefreshClicked()  {
-        final MutableLiveData<List<Hospital>> data = new MutableLiveData<>();
+    public LiveData<List<Ambulance>> onRefreshClicked()  {
+        final MutableLiveData<List<Ambulance>> data = new MutableLiveData<>();
         Log.e("Response in Error" ,ConfigClass.isLoggedIn+"");
         if(ConfigClass.isLoggedIn){
 
             PicoWebRestClient.setUp("Authorization",ConfigClass.token);
 
-            PicoWebRestClient.get("hospitals/citizens/", null, new JsonHttpResponseHandler() {
+            String AmbId = "5bf546f27f47c57269b73cbf";
+            PicoWebRestClient.get("hospitals/citizens/"+AmbId+"/ambulances", null, new JsonHttpResponseHandler() {
 
                 @Override
                 public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
                     super.onFailure(statusCode, headers, throwable, errorResponse);
                     try {
-                        //  ConfigClass.token = responseString.getString("");
 
-                        //  ConfigClass.isLoggedIn = true;
 
                         errorResponse.getString(0);
-                        //  StartActivity(SignupActivity.this,MainActivity.class);
+
                         data.setValue(null);
 
                     } catch (JSONException e) {
@@ -82,12 +81,12 @@ public class HospitalsViewModel extends ViewModel {
 
                         Gson gson = new Gson();
 
-                        String content = responseString.getString("hospitals").toString()+"";
-                        Type listType = new TypeToken<List<Hospital>>() {}.getType();
-                       // hospitals =
+                        String content = responseString.getString("ambulances").toString()+"";
+                        Type listType = new TypeToken<List<Ambulance>>() {}.getType();
+                        // hospitals =
                         Log.e("Response in success" ,content);
                         data.setValue(gson.fromJson(content,listType));
-                     //   Log.e("Response in success" , hospitals.get(1).toString());
+                        //   Log.e("Response in success" , hospitals.get(1).toString());
 
                     } catch (JSONException e) {
 
