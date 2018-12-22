@@ -1,7 +1,10 @@
 package ma.fstm.ilisi.pico.picomobile.viewmodel;
 
+import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.ViewModel;
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
+import android.util.Log;
 import android.view.View;
 
 import com.android.databinding.library.baseAdapters.BR;
@@ -17,9 +20,7 @@ import ma.fstm.ilisi.pico.picomobile.Model.Citizen;
 public class LoginViewModel extends BaseObservable {
 
     private Citizen citizen;
-    private String successMessage = "Login was successful";
     private String errorMessage = "Phone Number or Password not valid";
-
     @Bindable
     public String toastMessage = null;
     /**
@@ -39,6 +40,7 @@ public class LoginViewModel extends BaseObservable {
      * LoginViewModel Constructor
      * initialize an empty citizen object
      */
+
     public LoginViewModel() {
         citizen = new Citizen("", "");
     }
@@ -65,18 +67,21 @@ public class LoginViewModel extends BaseObservable {
      * This method handles the click on the login button
      * if the phone and the password typed by the user are valid then this method calls the signIn method
      * located in the citizen class
-     * @param view the view parameter is used to start a new intent to navigate to another activity
-     *             when the signIn succeeded
+     *
      */
     public void onLoginClicked(View view) {
         // if typed data is valid
         if (citizen.isDataInputValid()){
             // call Sign In function
+
             citizen.SignIn(view);
         }
         else{
+            Log.e(" MSG2 ","Error");
             // if data is not valid then show error message in the toast
+        // data.setValue("Invalid data");
             setToastMessage(errorMessage);
         }
+
     }
 }

@@ -1,11 +1,10 @@
 package ma.fstm.ilisi.pico.picomobile.viewmodel;
 
-import android.databinding.BaseObservable;
-import android.databinding.Bindable;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.ViewModel;
 import android.util.Log;
-import android.view.View;
 
-import com.android.databinding.library.baseAdapters.BR;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -15,13 +14,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
 import ma.fstm.ilisi.pico.picomobile.Model.Hospital;
 import ma.fstm.ilisi.pico.picomobile.Utilities.ConfigClass;
-import ma.fstm.ilisi.pico.picomobile.Utilities.PicoWebRestClient;
+import ma.fstm.ilisi.pico.picomobile.Repository.PicoWebRestClient;
 /**
  * HospitalsViewModel class
  * This class is responsible for data binding and data observable with the hospitals view
@@ -29,30 +27,28 @@ import ma.fstm.ilisi.pico.picomobile.Utilities.PicoWebRestClient;
  * @author      Yassine jout
  * @version     1.0
  */
-public class HospitalsViewModel extends BaseObservable {
+public class HospitalsViewModel extends ViewModel {
 
-    private List<Hospital> hospitalList;
+
+    public LiveData<List<Hospital>> getHospitalList() {
+        return hospitalList;
+    }
+
+    private LiveData<List<Hospital>> hospitalList;
     private String successMessage = "Sign in was successful";
     private String errorMessage = "field invalid not valid";
+    LiveData<List<Hospital>> hospitals ;
 
-    @Bindable
-    public String toastMessage = null;
 
-    public String getToastMessage() {
-        return toastMessage;
-    }
 
-    private void setToastMessage(String toastMessage) {
-
-        this.toastMessage = toastMessage;
-        notifyPropertyChanged(BR.toastMessage);
-    }
 
     public HospitalsViewModel() {
-        hospitalList = new ArrayList<Hospital>();
-    }
-    public void onRefreshClicked(View view){
 
+
+    }
+
+    public LiveData<List<Hospital>> onRefreshClicked()  {
+        final MutableLiveData<List<Hospital>> data = new MutableLiveData<>();
         Log.e("Response in Error" ,ConfigClass.isLoggedIn+"");
         if(ConfigClass.isLoggedIn){
 
@@ -68,9 +64,9 @@ public class HospitalsViewModel extends BaseObservable {
 
                         //  ConfigClass.isLoggedIn = true;
 
-                        Log.e("Response in Error" ,errorResponse.getString(0)+"dlkfjlsd");
+                        errorResponse.getString(0);
                         //  StartActivity(SignupActivity.this,MainActivity.class);
-                        setToastMessage(errorMessage);
+                        data.setValue(null);
 
                     } catch (JSONException e) {
 
@@ -83,14 +79,15 @@ public class HospitalsViewModel extends BaseObservable {
                         //  ConfigClass.token = responseString.getString("");
 
                         //  ConfigClass.isLoggedIn = true;
-                        List<Hospital> hospitals = new ArrayList<>();
+
                         Gson gson = new Gson();
 
                         String content = responseString.getString("hospitals").toString()+"";
                         Type listType = new TypeToken<List<Hospital>>() {}.getType();
-                        hospitals = gson.fromJson(content,listType);
+                       // hospitals =
                         Log.e("Response in success" ,content);
-                        Log.e("Response in success" ,hospitals.get(1).toString());
+                        data.setValue(gson.fromJson(content,listType));
+                     //   Log.e("Response in success" , hospitals.get(1).toString());
 
                     } catch (JSONException e) {
 
@@ -98,9 +95,8 @@ public class HospitalsViewModel extends BaseObservable {
                     }
                 }
             });
+
         }
-        else{
-            setToastMessage(errorMessage);
-        }
+        return data;
     }
 }

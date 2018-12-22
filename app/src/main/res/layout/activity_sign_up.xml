@@ -1,76 +1,134 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:bind="http://schemas.android.com/tools">
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:bind="http://schemas.android.com/tools">
 
-    <data>
+<data>
 
-        <variable
-            name="viewModel"
-            type="ma.fstm.ilisi.pico.picomobile.viewmodel.SignupViewModel" />
-    </data>
+    <variable
+        name="viewModel"
+        type="ma.fstm.ilisi.pico.picomobile.viewmodel.SignupViewModel" />
+</data>
 
+<LinearLayout
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:gravity="center_horizontal"
+android:orientation="vertical"
+android:paddingLeft="@dimen/activity_horizontal_margin"
+android:paddingTop="@dimen/activity_vertical_margin"
+android:paddingRight="@dimen/activity_horizontal_margin"
+android:paddingBottom="@dimen/activity_vertical_margin">
 
-    <ScrollView
+<!-- sign up progress -->
+<ProgressBar
+    android:id="@+id/sign_up_progress"
+    style="?android:attr/progressBarStyleLarge"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    android:visibility="gone" />
+
+<ScrollView
+    android:id="@+id/signup_form"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/phone_signup_form"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <LinearLayout
+        <ImageView
+            android:id="@+id/picoImageViewSignUp"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:src="@drawable/pico"
+            android:layout_gravity="center_horizontal" />
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="8dp"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
 
-            <EditText
-                android:id="@+id/inFullname"
+            <AutoCompleteTextView
+                android:id="@+id/FullNameSignUp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ems="10"
                 android:afterTextChanged="@{(editable)->viewModel.afterFullNameTextChanged(editable)}"
-                android:hint="Full name"
-                android:inputType="textPersonName" />
+                android:hint="@string/prompt_full_name"
+                android:maxLines="1"
+                android:singleLine="true" />
 
-            <EditText
-                android:id="@+id/inPhone"
+        </android.support.design.widget.TextInputLayout>
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <AutoCompleteTextView
+                android:id="@+id/phoneNumberSignUp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:afterTextChanged="@{(editable)->viewModel.afterPhoneTextChanged(editable)}"
-                android:hint="Phone number"
-                android:inputType="textEmailAddress"
-                android:padding="8dp" />
+                android:hint="@string/prompt_number"
+                android:maxLines="1"
+                android:singleLine="true" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
             <EditText
-                android:id="@+id/inPassword"
+                android:id="@+id/passwordSignUP"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="@string/prompt_password"
+                android:imeActionId="6"
+                android:imeActionLabel="@string/action_sign_in_short"
                 android:afterTextChanged="@{(editable)->viewModel.afterPasswordTextChanged(editable)}"
-                android:hint="Password"
+                android:imeOptions="actionUnspecified"
                 android:inputType="textPassword"
-                android:padding="8dp" />
+                android:maxLines="1"
+                android:singleLine="true" />
 
+        </android.support.design.widget.TextInputLayout>
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
             <EditText
-                android:id="@+id/inPassword1"
+                android:id="@+id/repeatPasswordSignUP"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ems="10"
+                android:hint="@string/prompt_repeat_password"
+                android:imeActionId="6"
                 android:afterTextChanged="@{(editable)->viewModel.afterPassword2TextChanged(editable)}"
-                android:hint="Conf Password"
+                android:imeActionLabel="@string/action_sign_in_short"
+                android:imeOptions="actionUnspecified"
                 android:inputType="textPassword"
-                android:padding="8dp" />
+                android:maxLines="1"
+                android:singleLine="true" />
 
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:onClick="@{(v)-> viewModel.onSignUpClicked(v)}"
-                android:text="Sign Up"
-                bind:toastMessage="@{viewModel.toastMessage}" />
-
-
-        </LinearLayout>
-
-    </ScrollView>
+        </android.support.design.widget.TextInputLayout>
+        <Button
+            android:id="@+id/sign_up_button"
+            style="?android:textAppearanceSmall"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/button_activity_sign_up"
+            android:onClick="@{(v)-> viewModel.onSignUpClicked(v)}"
+            android:textStyle="bold" />
+        <TextView android:id="@+id/link_signin"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:text="Already have an account? Sign in"
+            android:gravity="center"
+            android:textSize="16dip"/>
+    </LinearLayout>
+</ScrollView>
+</LinearLayout>
 
 </layout>

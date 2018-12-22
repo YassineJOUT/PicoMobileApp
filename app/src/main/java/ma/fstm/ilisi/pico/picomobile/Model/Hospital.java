@@ -16,21 +16,38 @@ public class Hospital {
      * @param name the name of a hospital
      */
     private String name;
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
     /**
      * @param coordinates object containing the latitude and longitude
      */
-    private GpsCoordinates coordinates;
+   // private GpsCoordinates coordinates;
+    private Double latitude;
+    private Double longitude;
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
+
     /**
      * Hospital class constructor
      * @param _id Hospital ID
+
      * @param name Hospital name
      * @param coordinates hospital latitude and longitude coordinates
      */
-    public Hospital(String _id, String name, GpsCoordinates coordinates) {
-        this._id = _id;
-        this.name = name;
-        this.coordinates = coordinates;
-    }
+
 
     /**
      * Hospital class constructor
@@ -42,7 +59,9 @@ public class Hospital {
     public Hospital(String _id, String name, double latitude, double longitude) {
         this._id = _id;
         this.name = name;
-        this.coordinates = new GpsCoordinates(latitude,longitude);
+       // this.coordinates = new GpsCoordinates(latitude,longitude);
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
     /**
      * hospital ID getter
@@ -72,18 +91,5 @@ public class Hospital {
     public void setName(String name) {
         this.name = name;
     }
-    /**
-     * hospital gsp coordinates getter
-     * @return GpsCoordinates object
-     */
-    public GpsCoordinates getCoordinates() {
-        return coordinates;
-    }
-    /**
-     * hospital gsp coordinates setter
-     * @param coordinates GpsCoordinates object of hospital location
-     */
-    public void setCoordinates(GpsCoordinates coordinates) {
-        this.coordinates = coordinates;
-    }
+
 }
