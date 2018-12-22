@@ -167,9 +167,15 @@ public class Citizen {
      * Verifies if the data provided by the user is valid when sign in
      * @return true the data is valid, false otherwise
      */
-    public boolean isDataInputValid(){
+    public boolean isDataInputValidForLogin(){
 
-        return !TextUtils.isEmpty(getPhone_number()) &&
+        return !TextUtils.isEmpty(getPhone_number()) && getPhone_number().length() == 10 &&
+                Patterns.PHONE.matcher(getPhone_number()).matches() && getPassword().length() > 5;
+    }
+    public boolean isDataInputValidForSignUp(){
+
+        return !TextUtils.isEmpty(getPhone_number()) && getPhone_number().length() == 10 &&
+                getFull_name().length() >  4 && getFull_name().length() <= 20 &&
                 Patterns.PHONE.matcher(getPhone_number()).matches() && getPassword().length() > 5;
     }
 

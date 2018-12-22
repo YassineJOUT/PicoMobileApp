@@ -2,6 +2,7 @@ package ma.fstm.ilisi.pico.picomobile.viewmodel;
 
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
+import android.util.Log;
 import android.view.View;
 
 import com.android.databinding.library.baseAdapters.BR;
@@ -100,13 +101,15 @@ public class SignupViewModel extends BaseObservable {
      */
     public void onSignUpClicked(View view){
 
-        if(citizen.isDataInputValid() && citizen.getPassword().equals(password)){
+        if(citizen.isDataInputValidForSignUp() && citizen.getPassword().equals(password)){
 
                 citizen.SignUp(view);
+                Log.e(" sign up ","success");
         }
         else{
 
             setToastMessage(errorMessage);
+            Log.e(" sign up ","Error");
         }
     }
 }
