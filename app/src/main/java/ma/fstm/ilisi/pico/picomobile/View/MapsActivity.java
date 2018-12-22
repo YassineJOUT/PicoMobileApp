@@ -9,6 +9,7 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
@@ -26,6 +27,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.PolyUtil;
 
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import ma.fstm.ilisi.pico.picomobile.Directions.ViewModel.DirectionsViewModel;
 import ma.fstm.ilisi.pico.picomobile.Model.Ambulance;
@@ -53,6 +57,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private Polyline[] polylineArray;
 
+    private HashMap<Marker,Hospital> hospitalMarkerHash;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,7 +67,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-
+        hospitalMarkerHash = new HashMap<>();
     }
 
     /**
@@ -122,11 +127,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                  for (Hospital h :hospitals
                          ) {
 
+                     hospitalMarkerHash.put(
                      mMap.addMarker(
                              new MarkerOptions()
                                      .position(new LatLng(h.getLatitude(),h.getLongitude()))
                                      .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
-                     .title(h.getName())).showInfoWindow();
+                     .title(h.getName())),h);
                  }
              }
          });
@@ -222,15 +228,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Log.e("marker"," jujhgjhgh");
 
         ambulanceViewModel = ViewModelProviders.of(this).get(AmbulanceViewModel.class);
-
-        ambulanceViewModel.onRefreshClicked().observe(this,ambulances -> {
+        Intent intent = new Intent(this, AmbulanceListActivity.class);
+        hospitalMarkerHash.get(marker);
+        ambulanceViewModel.onRefreshClicked(hospitalMarkerHash.get(marker)).observe(this,ambulances -> {
             if(ambulances != null){
-                for(Ambulance a : ambulances){
-                    Log.e("Amb ",a.getRegistrationNumber()+"");
-                }
+                intent.putParcelableArrayListExtra("ambulances", (ArrayList<Ambulance>) ambulances);
+                startActivity(intent);
+               // for(Ambulance a : ambulances){
+               //     Log.e("Amb ",a.getRegistrationNumber()+"");
+               // }
             }
         });
-        startActivity(new Intent(this, AmbulanceListActivity.class));
+
+      //  startActivity();
         return false;
     }
 }

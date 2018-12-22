@@ -47,7 +47,7 @@ public class AmbulanceViewModel  extends ViewModel {
 
     }
 
-    public LiveData<List<Ambulance>> onRefreshClicked()  {
+    public LiveData<List<Ambulance>> onRefreshClicked(Hospital hospital)  {
         final MutableLiveData<List<Ambulance>> data = new MutableLiveData<>();
         Log.e("Response in Error" ,ConfigClass.isLoggedIn+"");
         if(ConfigClass.isLoggedIn){
@@ -55,7 +55,7 @@ public class AmbulanceViewModel  extends ViewModel {
             PicoWebRestClient.setUp("Authorization",ConfigClass.token);
 
             String AmbId = "5bf546f27f47c57269b73cbf";
-            PicoWebRestClient.get("hospitals/citizens/"+AmbId+"/ambulances", null, new JsonHttpResponseHandler() {
+            PicoWebRestClient.get("hospitals/citizens/"+hospital.get_id()+"/ambulances", null, new JsonHttpResponseHandler() {
 
                 @Override
                 public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {

@@ -14,6 +14,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import java.util.ArrayList;
+
+import ma.fstm.ilisi.pico.picomobile.Model.Ambulance;
 import ma.fstm.ilisi.pico.picomobile.R;
 
 public class AmbulanceListActivity extends AppCompatActivity {
@@ -25,8 +28,9 @@ public class AmbulanceListActivity extends AppCompatActivity {
             R.drawable.ic_launcher_background, R.drawable.ic_launcher_background,
             R.drawable.ic_launcher_background, R.drawable.ic_launcher_background,
             R.drawable.ic_launcher_background, R.drawable.ic_launcher_background};
-    String[] matricules = {"123654K5M","123654K5M", "123654K5M", "123654K5M", "123654K5M","123654K5M", "123654K5M", "123654K5M"};
-    Boolean[] available = {true, false, false, true, false, true, true, true};
+    //String[] matricules = {"123654K5M","123654K5M", "123654K5M", "123654K5M", "123654K5M","123654K5M", "123654K5M", "123654K5M"};
+    //Boolean[] available = {true, false, false, true, false, true, true, true};
+    ArrayList<Ambulance> ambulances = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,12 +39,15 @@ public class AmbulanceListActivity extends AppCompatActivity {
         ListView listView = (ListView) findViewById(R.id.ambulances_list_view);
         CustomAdapter customAdapter = new CustomAdapter();
         listView.setAdapter(customAdapter);
+
+         ambulances = getIntent().getParcelableArrayListExtra("ambulances");
+
     }
     class CustomAdapter extends BaseAdapter{
 
         @Override
         public int getCount() {
-            return images.length;
+            return ambulances.size();
         }
 
         @Override
@@ -61,14 +68,15 @@ public class AmbulanceListActivity extends AppCompatActivity {
             ToggleButton toggleButtonAvailable = (ToggleButton) convertView.findViewById(R.id.toggleButtonAvailable);
 
             imageView.setImageResource(images[position]);
-            textViewMatricule.setText(matricules[position]);
-            if(available[position])
+            textViewMatricule.setText(ambulances.get(position).getRegistrationNumber());
+            if(ambulances.get(position).getAvailable())
                 toggleButtonAvailable.setBackgroundColor(Color.parseColor("#19d32f"));
             else
                 toggleButtonAvailable.setBackgroundColor(Color.parseColor("#cccccc"));
 
 
             return convertView;
+
         }
     }
 }

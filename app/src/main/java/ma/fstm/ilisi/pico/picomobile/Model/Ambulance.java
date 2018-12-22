@@ -1,10 +1,13 @@
 
 package ma.fstm.ilisi.pico.picomobile.Model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Ambulance {
+public class Ambulance implements Parcelable {
 
     @SerializedName("_id")
     @Expose
@@ -60,6 +63,40 @@ public class Ambulance {
 
     public void setLongitude(Double longitude) {
         this.longitude = longitude;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+    public static final Parcelable.Creator<Ambulance> CREATOR = new Parcelable.Creator<Ambulance>() {
+        @Override
+        public Ambulance createFromParcel(Parcel source) {
+
+            return new Ambulance(source);
+        }
+
+        @Override
+        public Ambulance[] newArray(int size) {
+            return new Ambulance[size];
+        }
+    };
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(registrationNumber);
+        dest.writeInt(available ? 1 : 0);
+        dest.writeDouble(latitude);
+        dest.writeDouble(longitude);
+    }
+
+
+    Ambulance(Parcel p){
+        this.id = p.readString();
+        this.registrationNumber = p.readString();
+        this.available = p.readInt() == 0 ? false : true;
+        this.latitude = p.readDouble();
+        this.longitude = p.readDouble();
     }
 
 }
