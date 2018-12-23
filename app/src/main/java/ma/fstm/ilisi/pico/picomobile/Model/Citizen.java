@@ -15,6 +15,7 @@ import com.loopj.android.http.RequestParams;
 import org.json.JSONException;
 import org.json.JSONObject;
 import cz.msebera.android.httpclient.Header;
+import ma.fstm.ilisi.pico.picomobile.R;
 import ma.fstm.ilisi.pico.picomobile.Utilities.ConfigClass;
 import ma.fstm.ilisi.pico.picomobile.Repository.PicoWebRestClient;
 import ma.fstm.ilisi.pico.picomobile.View.MapsActivity;
@@ -187,7 +188,10 @@ public class Citizen {
      *            authentication succeeded
      */
     public void SignIn(View view){
-
+        View mLoginFormView = view.getRootView().findViewById(R.id.login_form);
+        View mProgressView = view.getRootView().findViewById(R.id.login_progress);
+        mProgressView.setVisibility(View.VISIBLE);
+        mLoginFormView.setVisibility(View.GONE);
         String MsgErr = "Success";
         /* adding parameters to the http request */
         RequestParams params = new RequestParams();
@@ -209,6 +213,8 @@ public class Citizen {
                 ConfigClass.isLoggedIn = false;
                 try {
                       // msg = jsonresp.getString("msg");
+                    mProgressView.setVisibility(View.GONE);
+                    mLoginFormView.setVisibility(View.VISIBLE);
                     Toast.makeText(view.getContext(), jsonresp.getString("msg"), Toast.LENGTH_SHORT).show();
                        Log.e("Response on failure",jsonresp.getString("msg"));
                 } catch (JSONException e) {
@@ -225,10 +231,13 @@ public class Citizen {
                     ConfigClass.isLoggedIn = true;
 
                     Log.e("Response in success" ,responseString.getString("token")+"");
+
                     /* Opening hospitals list activity*/
                     Context context = view.getContext();
                     Intent intent = new Intent(context, MapsActivity.class);
                     context.startActivity(intent);
+                    mProgressView.setVisibility(View.GONE);
+                    mLoginFormView.setVisibility(View.VISIBLE);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -240,7 +249,10 @@ public class Citizen {
      * SignUp function
      */
     public void SignUp(View view){
-
+        View mLoginFormView = view.getRootView().findViewById(R.id.login_form);
+        View mProgressView = view.getRootView().findViewById(R.id.login_progress);
+        mProgressView.setVisibility(View.VISIBLE);
+        mLoginFormView.setVisibility(View.GONE);
         Citizen cit = this;
         // adding typed data into http request parameters
         RequestParams params = new RequestParams();
@@ -269,6 +281,8 @@ public class Citizen {
                     //  ConfigClass.token = responseString.getString("");
 
                     //  ConfigClass.isLoggedIn = true;
+                    mProgressView.setVisibility(View.GONE);
+                    mLoginFormView.setVisibility(View.VISIBLE);
                     Toast.makeText(view.getContext(),errorResponse.getString("error"), Toast.LENGTH_SHORT).show();
                     Log.e("Response in Error" ,errorResponse.getString("error"));
                     //  StartActivity(SignupActivity.this,MainActivity.class);
@@ -291,6 +305,8 @@ public class Citizen {
                     Log.e("Response in success" ,responseString.getString("success"));
                     // StartActivity(SignupActivity.this,MainActivity.class);
                     cit.SignIn(view);
+                    mProgressView.setVisibility(View.GONE);
+                    mLoginFormView.setVisibility(View.VISIBLE);
 
                 } catch (JSONException e) {
 
