@@ -71,15 +71,14 @@ public class LoginViewModel extends BaseObservable {
      */
     public void onLoginClicked(View view) {
         // if typed data is valid
-        if (citizen.isDataInputValid()){
+        if (citizen.isDataInputValidForLogin()){
             // call Sign In function
-
             citizen.SignIn(view);
         }
         else{
             Log.e(" MSG2 ","Error");
             // if data is not valid then show error message in the toast
-        // data.setValue("Invalid data");
+            // data.setValue("Invalid data");
             setToastMessage(errorMessage);
         }
 
