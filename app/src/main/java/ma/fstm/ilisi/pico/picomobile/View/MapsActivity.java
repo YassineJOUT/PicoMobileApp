@@ -36,6 +36,9 @@ import org.json.JSONObject;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
+
+import javax.net.ssl.HostnameVerifier;
 
 import cz.msebera.android.httpclient.Header;
 import io.socket.client.IO;
@@ -62,7 +65,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private String locationProvider;
     private Location lastLocation;
 
-    private Marker myLocationMarker;
+    private Marker ambulanceMarker;
     private Marker targetMarker;
 
     DirectionsViewModel directionsViewModel;
@@ -75,6 +78,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private Socket socket;
 
+    private boolean isAmbBooked ;
+    MapsActivity me = MapsActivity.this;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,7 +92,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         hospitalMarkerHash = new HashMap<>();
 
-
+        isAmbBooked = false ;
 
 
        /* socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
@@ -115,13 +121,76 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-    public void  sendAlarm() {
+    public  void removeHospitals(){
+        if (!hospitalMarkerHash.isEmpty()) {
+            for (Map.Entry<Marker, Hospital> entry : hospitalMarkerHash.entrySet()) {
+                Marker key = entry.getKey();
+                key.remove();
+            }
+        }
+    }
+
+    private void DrawPolyLine(Location loc){
+        directionsViewModel = ViewModelProviders.of(this).get(DirectionsViewModel.class);
+
+        directionsViewModel.getDirectionsLiveData(lastLocation.getLatitude()+","+lastLocation.getLongitude(),
+                loc.getLatitude()+","+loc.getLongitude(),
+                getString(R.string.google_maps_key)).observe(this,direction ->
+        {
+            directionsViewModel.getPoylineLiveData(direction).observe(this,
+                    polylines -> {
+                        Log.e("GetPolyLiveData ","Live data call back");
+                        if (polylineArray != null) {
+                            for (Polyline polyline : polylineArray) {
+                                polyline.remove();
+                            }
+                        }
+                        if (polylines != null) {
+                            polylineArray = new Polyline[polylines.length];
+                            Log.d("reached here", "reached here");
+                            for (int i=0;i<polylines.length;i++) {
+                                PolylineOptions options = new PolylineOptions();
+                                options.color(Color.MAGENTA);
+                                options.width(10);
+                                options.addAll(PolyUtil.decode(polylines[i]));
+                                polylineArray[i] = mMap.addPolyline(options);
+                            }
+                        }
+                    });
+        });
+    }
+    private void DrawDriverPosition(JSONObject obj){
+
+        runOnUiThread(new Runnable(){
+            public void run(){
+
+                try {
+                    removeHospitals();
+
+                    if(ambulanceMarker != null) {
+                        ambulanceMarker.remove();
+                    }
+                    ambulanceMarker = mMap.addMarker(
+                            new MarkerOptions()
+                                    .position(new LatLng(obj.getDouble("latitude"), obj.getDouble("longitude")))
+                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+                    Log.e("Socket status ; : ",obj.getDouble("latitude")+"");
+                    Log.e("Socket status ; : ",obj.getDouble("longitude")+"");
+                    Location loc = new Location(locationProvider);
+                    loc.setLatitude(obj.getDouble("latitude"));
+                    loc.setLongitude(obj.getDouble("longitude"));
+                    DrawPolyLine(loc);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
 
-        hospitalsViewModel.postData();
 
+            }
+        });
     }
     public void socketAuthentication() {
+
         try {
             socket = IO.socket("http://192.168.43.163:9090?userType=CITIZEN_SOCKET_TYPE");
         } catch (URISyntaxException e) {
@@ -134,7 +203,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void call(Object... args) {
                 Log.e("Socket status : ","Socket authenticated");
-                sendAlarm();
+              //sendAlarm();
             }
 
         }).on("AMBULANCE_POSITION_CHANGE_EVENT", new Emitter.Listener() {
@@ -142,13 +211,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     @Override
                     public void call(Object... args) {
                         JSONObject obj = (JSONObject)args[0];
-                        try {
-                            Log.e("Socket status : ",obj.getString("latitude")+"");
-                            Log.e("Socket status : ",obj.getString("longitude")+"");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
+                        isAmbBooked = true;
+                        DrawDriverPosition(obj);
                     }
 
                 }).on(Socket.EVENT_CONNECT, new Emitter.Listener() {
@@ -172,23 +236,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
-    public void changePosition() {
-
-              double   longitude = Math.random() * 100000;
-              double  latitude =Math.random() * 100000;
-              JSONObject obj = new JSONObject();
-        try {
-            obj.put("latitude",latitude);
-            obj.put("longitude",longitude);
-            socket.emit("POSITION_CHANGE_EVENT", obj);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-
-
-
-    }
 
     /**
      * Manipulates the map once available.
@@ -234,15 +281,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.getUiSettings().setZoomControlsEnabled(true);
 
         lastLocation = locationManager.getLastKnownLocation(locationProvider);
-
+        Log.e("Last known location",lastLocation.getLatitude()+"");
         // mMap.addMarker(new MarkerOptions().position(new LatLng(lastLocation.getLatitude(),lastLocation.getLongitude())).title("Myloc"));
         mMap.setOnMapClickListener(this);
 
         // get hospitals view model
         hospitalsViewModel = ViewModelProviders.of(this).get(HospitalsViewModel.class);
-
+        if(!isAmbBooked)
         // adding hospitals markers on the map
          hospitalsViewModel.onRefreshClicked().observe(this,hospitals -> {
+
              if(hospitals != null){
                  for (Hospital h :hospitals
                          ) {
@@ -256,8 +304,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                  }
              }
          });
+
         socketAuthentication();
-        changePosition();
     }
 
     @Override
@@ -265,13 +313,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         Log.d("location", "My location  " + location.getLatitude());
         lastLocation = location;
-        LatLng latlng = new LatLng(location.getLatitude(), location.getLongitude());
-        if (myLocationMarker != null) myLocationMarker.remove();
-      /*  myLocationMarker = mMap.addMarker(
-                new MarkerOptions()
-                        .position(latlng)
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA)));
-*/
+
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("latitude",location.getLatitude());
+            obj.put("longitude",location.getLongitude());
+            socket.emit("POSITION_CHANGE_EVENT", obj);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -297,7 +348,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     onMapReady(mMap);
                 }
-
         }
     }
 
@@ -317,37 +367,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         double dist = lastLocation.distanceTo(loc);
         Log.e("Distance ",dist+"");
-         directionsViewModel = ViewModelProviders.of(this).get(DirectionsViewModel.class);
 
-         directionsViewModel.getDirectionsLiveData(lastLocation.getLatitude()+","+lastLocation.getLongitude(),
-                 loc.getLatitude()+","+loc.getLongitude(),
-                 getString(R.string.google_maps_key)).observe(this,direction ->
-                  {
-                     directionsViewModel.getPoylineLiveData(direction).observe(this,
-                             polylines -> {
-                         Log.e("GetPolyLiveData ","Live data call back");
-                                 if (polylineArray != null) {
-                                     for (Polyline polyline : polylineArray) {
-                                         polyline.remove();
-                                     }
-                                 }
-                                 if (polylines != null) {
-                                     polylineArray = new Polyline[polylines.length];
-                                     Log.d("reached here", "reached here");
-                                     for (int i=0;i<polylines.length;i++) {
-                                         PolylineOptions options = new PolylineOptions();
-                                         options.color(Color.MAGENTA);
-                                         options.width(10);
-                                         options.addAll(PolyUtil.decode(polylines[i]));
-                                         polylineArray[i] = mMap.addPolyline(options);
-                                     }
-                                 }
-                             });
-                 });
     }
     @Override
     public boolean onMarkerClick(Marker marker) {
-        Log.e("marker"," jujhgjhgh");
 
         ambulanceViewModel = ViewModelProviders.of(this).get(AmbulanceViewModel.class);
         Intent intent = new Intent(this, AmbulanceListActivity.class);
@@ -356,13 +379,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             if(ambulances != null){
                 intent.putParcelableArrayListExtra("ambulances", (ArrayList<Ambulance>) ambulances);
                 startActivity(intent);
-               // for(Ambulance a : ambulances){
-               //     Log.e("Amb ",a.getRegistrationNumber()+"");
-               // }
+
             }
         });
 
-      //  startActivity();
         return false;
     }
 }

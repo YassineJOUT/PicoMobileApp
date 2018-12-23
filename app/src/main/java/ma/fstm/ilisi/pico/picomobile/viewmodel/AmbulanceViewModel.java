@@ -37,10 +37,10 @@ public class AmbulanceViewModel  extends ViewModel {
     private LiveData<List<Ambulance>> ambulances;
     private String successMessage = "Sign in was successful";
     private String errorMessage = "field invalid not valid";
-    LiveData<List<Hospital>> hospitals ;
 
-
-
+    public void doBookAnAmbulance(Ambulance amb) {
+        amb.BookAnAmbulance();
+    }
 
     public AmbulanceViewModel() {
 
