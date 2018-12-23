@@ -118,36 +118,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void  sendAlarm() {
 
 
-        String host = "http://pico.ossrv.nl:9090";
-        RequestParams params = new RequestParams();
-
-        params.put("ambulance_id", "5bf54f597f47c57269b73f1c");
-
-        PicoWebRestClient.setUp("Authorization",ConfigClass.token);
-
-        PicoWebRestClient.setUp("Content-Type","application/x-www-form-urlencoded");
-
-        PicoWebRestClient.post("alarms/citizens",params, new JsonHttpResponseHandler(){
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                super.onSuccess(statusCode, headers, response);
-                Log.e("Success", "yes");
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-
-                Log.e("Error", "Error");
-
-            }
-        });
-
+        hospitalsViewModel.postData();
 
     }
     public void socketAuthentication() {
         try {
-            socket = IO.socket("http://pico.ossrv.nl:9090?userType=CITIZEN_SOCKET_TYPE");
+            socket = IO.socket("http://192.168.43.163:9090?userType=CITIZEN_SOCKET_TYPE");
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
@@ -175,16 +151,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                     }
 
-                }).on("connect", new Emitter.Listener() {
+                }).on(Socket.EVENT_CONNECT, new Emitter.Listener() {
 
             @Override
             public void call(Object... args) {
+                JSONObject obj = new JSONObject();
+                try {
+                    obj.put("token",ConfigClass.token);
+                    socket.emit("CITIZEN_AUNTENTICATION_EVENT", obj);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 //logElt.innerHTML = 'Socket connected';
-                socket.emit("CITIZEN_AUNTENTICATION_EVENT", "{ "+ConfigClass.token+" }");
+
             }
 
         });
-
+        socket.connect();
 
     }
 
@@ -193,7 +176,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
               double   longitude = Math.random() * 100000;
               double  latitude =Math.random() * 100000;
-        socket.emit("POSITION_CHANGE_EVENT", "{"+latitude+":"+longitude+"}");
+              JSONObject obj = new JSONObject();
+        try {
+            obj.put("latitude",latitude);
+            obj.put("longitude",longitude);
+            socket.emit("POSITION_CHANGE_EVENT", obj);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
 
 
     }

@@ -1,19 +1,15 @@
 package ma.fstm.ilisi.pico.picomobile.Repository;
 
-import com.loopj.android.http.*;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.SyncHttpClient;
 
-/**
- * PicoWebRestClient class
- * This class is responsible for calling the API to post json data or get json data
- *
- * @author      Yassine jout
- * @version     1.0
- */
-public class PicoWebRestClient  {
+public class PicoWebRestClientSync{
     // Url to the api
     private static final String BASE_URL = "http://192.168.43.163:9090/api/";
     // Asynchronous Http client
-    private static AsyncHttpClient client = new AsyncHttpClient();
+    private static SyncHttpClient client = new SyncHttpClient();
     // adding the content type to the header
 
     /**
