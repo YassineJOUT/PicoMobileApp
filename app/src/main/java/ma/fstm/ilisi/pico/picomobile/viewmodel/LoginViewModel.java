@@ -79,8 +79,6 @@ public class LoginViewModel extends BaseObservable {
      *
      */
     public void onLoginClicked(View view) {
-        View mLoginFormView = view.getRootView().findViewById(R.id.login_form);
-        View mProgressView = view.getRootView().findViewById(R.id.login_progress);
 
         // if typed data is valid
         if (citizen.isDataInputValidForLogin()){
@@ -89,8 +87,6 @@ public class LoginViewModel extends BaseObservable {
             citizen.SignIn(view);
         }
         else{
-            mProgressView.setVisibility(View.GONE);
-            mLoginFormView.setVisibility(View.VISIBLE);
             Log.e(" MSG2 ","Error");
             // if data is not valid then show error message in the toast
             // data.setValue("Invalid data");
