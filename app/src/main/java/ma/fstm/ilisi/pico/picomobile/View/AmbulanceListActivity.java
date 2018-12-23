@@ -4,8 +4,10 @@ import android.graphics.Color;
 import android.graphics.drawable.shapes.Shape;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -42,6 +44,12 @@ public class AmbulanceListActivity extends AppCompatActivity {
 
          ambulances = getIntent().getParcelableArrayListExtra("ambulances");
 
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.e("clicked","yes");
+            }
+        });
     }
     class CustomAdapter extends BaseAdapter{
 

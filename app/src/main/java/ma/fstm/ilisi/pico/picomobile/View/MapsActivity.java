@@ -26,12 +26,17 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.PolyUtil;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 
+
+import org.json.JSONObject;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import cz.msebera.android.httpclient.Header;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
@@ -39,6 +44,7 @@ import ma.fstm.ilisi.pico.picomobile.Directions.ViewModel.DirectionsViewModel;
 import ma.fstm.ilisi.pico.picomobile.Model.Ambulance;
 import ma.fstm.ilisi.pico.picomobile.Model.Hospital;
 import ma.fstm.ilisi.pico.picomobile.R;
+import ma.fstm.ilisi.pico.picomobile.Repository.PicoWebRestClient;
 import ma.fstm.ilisi.pico.picomobile.viewmodel.AmbulanceViewModel;
 import ma.fstm.ilisi.pico.picomobile.viewmodel.HospitalsViewModel;
 
@@ -77,12 +83,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         hospitalMarkerHash = new HashMap<>();
 
 
-         socket = null;
-        try {
-            socket = IO.socket("http://pico.ossrv.nl:9090");
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
+
+
         socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
 
             @Override
@@ -103,6 +105,55 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         });
         socket.connect();
+
+
+    }
+
+    public void  sendAlarm() {
+
+
+        String host = "http://pico.ossrv.nl:9090/";
+        RequestParams params = new RequestParams();
+
+        params.put("ambulance_id", "5bf54f597f47c57269b73f1e");
+
+        PicoWebRestClient.setUp("Content-Type","application/x-www-form-urlencoded");
+
+        PicoWebRestClient.post("alarms/citizens",params, new JsonHttpResponseHandler(){
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                Log.e("Success", "yess");
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+
+                Log.e("Error", "Error");
+
+            }
+        });
+
+
+    }
+    public void socketAuthentication() {
+        try {
+            socket = IO.socket("http://pico.ossrv.nl:9090?userType=CITIZEN_SOCKET_TYPE");
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+
+
+        socket.on("CITIZEN_AUTH_SUCCESS_EVENT", new Emitter.Listener() {
+
+            @Override
+            public void call(Object... args) {
+                Log.e("Socket status : ","Socket authenticated");
+                sendAlarm();
+            }
+
+        });
 
     }
 
