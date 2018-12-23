@@ -25,10 +25,10 @@ import ma.fstm.ilisi.pico.picomobile.R;
 
 public class AmbulanceListActivity extends AppCompatActivity {
     //8 elements
-    int [] images = {R.drawable.ic_launcher_background, R.drawable.ic_launcher_background,
-            R.drawable.ic_launcher_background, R.drawable.ic_launcher_background,
-            R.drawable.ic_launcher_background, R.drawable.ic_launcher_background,
-            R.drawable.ic_launcher_background, R.drawable.ic_launcher_background};
+    int [] images = {R.drawable.amb1, R.drawable.amb2,
+            R.drawable.amb3, R.drawable.amb4,
+            R.drawable.amb5, R.drawable.amb6,
+            R.drawable.amb7, R.drawable.amb8};
     ArrayList<Ambulance> ambulances = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
