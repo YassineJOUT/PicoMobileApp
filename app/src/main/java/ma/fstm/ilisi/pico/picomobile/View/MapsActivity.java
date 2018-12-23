@@ -28,9 +28,13 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.PolyUtil;
 
 
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import io.socket.client.IO;
+import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 import ma.fstm.ilisi.pico.picomobile.Directions.ViewModel.DirectionsViewModel;
 import ma.fstm.ilisi.pico.picomobile.Model.Ambulance;
 import ma.fstm.ilisi.pico.picomobile.Model.Hospital;
@@ -58,6 +62,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Polyline[] polylineArray;
 
     private HashMap<Marker,Hospital> hospitalMarkerHash;
+
+    private Socket socket;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +75,35 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
 
         hospitalMarkerHash = new HashMap<>();
+
+
+         socket = null;
+        try {
+            socket = IO.socket("http://pico.ossrv.nl:9090");
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
+
+            @Override
+            public void call(Object... args) {
+                socket.emit("foo", "hi");
+                socket.disconnect();
+            }
+
+        }).on("event", new Emitter.Listener() {
+
+            @Override
+            public void call(Object... args) {}
+
+        }).on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
+
+            @Override
+            public void call(Object... args) {}
+
+        });
+        socket.connect();
+
     }
 
     /**
