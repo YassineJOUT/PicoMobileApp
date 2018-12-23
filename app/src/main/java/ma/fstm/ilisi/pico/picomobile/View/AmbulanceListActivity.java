@@ -55,6 +55,12 @@ public class AmbulanceListActivity extends AppCompatActivity {
             }
         });
 
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.e("clicked","yes");
+            }
+        });
     }
     class CustomAdapter extends BaseAdapter{
 
