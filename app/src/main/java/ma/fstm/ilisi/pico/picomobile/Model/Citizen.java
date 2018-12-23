@@ -190,8 +190,10 @@ public class Citizen {
     public void SignIn(View view){
         View mLoginFormView = view.getRootView().findViewById(R.id.login_form);
         View mProgressView = view.getRootView().findViewById(R.id.login_progress);
+        View mSignInProgressIcon = view.getRootView().findViewById(R.id.ProgressIcon);
         mProgressView.setVisibility(View.VISIBLE);
         mLoginFormView.setVisibility(View.GONE);
+        mSignInProgressIcon.setVisibility(View.VISIBLE);
         String MsgErr = "Success";
         /* adding parameters to the http request */
         RequestParams params = new RequestParams();
@@ -215,8 +217,12 @@ public class Citizen {
                       // msg = jsonresp.getString("msg");
                     mProgressView.setVisibility(View.GONE);
                     mLoginFormView.setVisibility(View.VISIBLE);
-                    Toast.makeText(view.getContext(), jsonresp.getString("msg"), Toast.LENGTH_SHORT).show();
-                       Log.e("Response on failure",jsonresp.getString("msg"));
+                    mSignInProgressIcon.setVisibility(View.GONE);
+                    if(jsonresp != null)
+                        Toast.makeText(view.getContext(), jsonresp.getString("msg"), Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(view.getContext(), "Unable to connect check your connection !", Toast.LENGTH_SHORT).show();
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -238,6 +244,7 @@ public class Citizen {
                     context.startActivity(intent);
                     mProgressView.setVisibility(View.GONE);
                     mLoginFormView.setVisibility(View.VISIBLE);
+                    mSignInProgressIcon.setVisibility(View.GONE);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -251,8 +258,10 @@ public class Citizen {
     public void SignUp(View view){
         View mLoginFormView = view.getRootView().findViewById(R.id.login_form);
         View mProgressView = view.getRootView().findViewById(R.id.login_progress);
+        View mSignUpProgressIcon = view.getRootView().findViewById(R.id.ProgressIcon);
         mProgressView.setVisibility(View.VISIBLE);
         mLoginFormView.setVisibility(View.GONE);
+        mSignUpProgressIcon.setVisibility(View.VISIBLE);
         Citizen cit = this;
         // adding typed data into http request parameters
         RequestParams params = new RequestParams();
@@ -283,10 +292,12 @@ public class Citizen {
                     //  ConfigClass.isLoggedIn = true;
                     mProgressView.setVisibility(View.GONE);
                     mLoginFormView.setVisibility(View.VISIBLE);
-                    Toast.makeText(view.getContext(),errorResponse.getString("error"), Toast.LENGTH_SHORT).show();
-                    Log.e("Response in Error" ,errorResponse.getString("error"));
-                    //  StartActivity(SignupActivity.this,MainActivity.class);
-                    //setToastMessage(errorMessage);
+                    mSignUpProgressIcon.setVisibility(View.GONE);
+                    if(errorResponse != null)
+                        Toast.makeText(view.getContext(),errorResponse.getString("error"), Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(view.getContext(), "Unable to connect check your connection !", Toast.LENGTH_SHORT).show();
+
 
                 } catch (JSONException e) {
 
@@ -307,6 +318,7 @@ public class Citizen {
                     cit.SignIn(view);
                     mProgressView.setVisibility(View.GONE);
                     mLoginFormView.setVisibility(View.VISIBLE);
+                    mSignUpProgressIcon.setVisibility(View.GONE);
 
                 } catch (JSONException e) {
 
