@@ -1,15 +1,22 @@
 package ma.fstm.ilisi.pico.picomobile.viewmodel;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
+import android.os.Build;
 import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
 
 import com.android.databinding.library.baseAdapters.BR;
 
 import ma.fstm.ilisi.pico.picomobile.Model.Citizen;
+import ma.fstm.ilisi.pico.picomobile.R;
+
 /**
  * LoginViewModel class
  * This class is responsible for data binding and data observable with the Login view
@@ -21,6 +28,8 @@ public class LoginViewModel extends BaseObservable {
 
     private Citizen citizen;
     private String errorMessage = "Phone Number or Password not valid";
+
+
     @Bindable
     public String toastMessage = null;
     /**
@@ -70,12 +79,18 @@ public class LoginViewModel extends BaseObservable {
      *
      */
     public void onLoginClicked(View view) {
+        View mLoginFormView = view.getRootView().findViewById(R.id.login_form);
+        View mProgressView = view.getRootView().findViewById(R.id.login_progress);
+
         // if typed data is valid
         if (citizen.isDataInputValidForLogin()){
             // call Sign In function
+
             citizen.SignIn(view);
         }
         else{
+            mProgressView.setVisibility(View.GONE);
+            mLoginFormView.setVisibility(View.VISIBLE);
             Log.e(" MSG2 ","Error");
             // if data is not valid then show error message in the toast
             // data.setValue("Invalid data");
@@ -83,4 +98,38 @@ public class LoginViewModel extends BaseObservable {
         }
 
     }
+   /* @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    private void showProgress(final boolean show) {
+        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
+        // for very easy animations. If available, use these APIs to fade-in
+        // the progress spinner.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            int shortAnimTime = mView.getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+            mLoginFormView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+                }
+            });
+
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mProgressView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                }
+            });
+        } else {
+            // The ViewPropertyAnimator APIs are not available, so simply show
+            // and hide the relevant UI components.
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+        }
+    }*/
+
+
 }
