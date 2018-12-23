@@ -42,7 +42,7 @@ public class AmbulanceListActivity extends AppCompatActivity {
         ambulances = getIntent().getParcelableArrayListExtra("ambulances");
 
 
-        Intent intent = new Intent(this, AmbulanceDetailActivity.class);
+        Intent ambulanceDetailsIntent = new Intent(this, AmbulanceDetailActivity.class);
         listView.setItemsCanFocus(true);
         // Set an item click listener for ListView
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener()  {
@@ -50,8 +50,8 @@ public class AmbulanceListActivity extends AppCompatActivity {
             public void onItemClick (AdapterView < ? > adapter, View view,int position, long arg){
 
                 //Toast.makeText(getApplicationContext(), "selected Item position is " + ambulances.get(position), Toast.LENGTH_LONG).show();
-                intent.putExtra("ambulance", (Ambulance) ambulances.get(position));
-                startActivity(intent);
+                ambulanceDetailsIntent.putExtra("ambulance", (Ambulance) ambulances.get(position));
+                startActivity(ambulanceDetailsIntent);
             }
         });
 
@@ -99,3 +99,4 @@ public class AmbulanceListActivity extends AppCompatActivity {
         }
     }
 }
+// for commit
