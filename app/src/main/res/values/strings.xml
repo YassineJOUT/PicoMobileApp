@@ -29,7 +29,7 @@
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="title_activity_sign_up">Sign up</string>
     <string name="button_activity_sign_up">Sign up</string>
-    <string name="title_activity_ambulance_list">AmbulanceListActivity</string>
+    <string name="title_activity_ambulance_list">Ambulances List</string>
 </resources>
 
     <!-- for commit -->

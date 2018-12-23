@@ -15,6 +15,7 @@ import com.loopj.android.http.RequestParams;
 import org.json.JSONException;
 import org.json.JSONObject;
 import cz.msebera.android.httpclient.Header;
+import ma.fstm.ilisi.pico.picomobile.R;
 import ma.fstm.ilisi.pico.picomobile.Utilities.ConfigClass;
 import ma.fstm.ilisi.pico.picomobile.Repository.PicoWebRestClient;
 import ma.fstm.ilisi.pico.picomobile.View.MapsActivity;
@@ -187,7 +188,12 @@ public class Citizen {
      *            authentication succeeded
      */
     public void SignIn(View view){
-
+        View mLoginFormView = view.getRootView().findViewById(R.id.login_form);
+        View mProgressView = view.getRootView().findViewById(R.id.login_progress);
+        View mSignInProgressIcon = view.getRootView().findViewById(R.id.ProgressIcon);
+        mProgressView.setVisibility(View.VISIBLE);
+        mLoginFormView.setVisibility(View.GONE);
+        mSignInProgressIcon.setVisibility(View.VISIBLE);
         String MsgErr = "Success";
         /* adding parameters to the http request */
         RequestParams params = new RequestParams();
@@ -209,8 +215,14 @@ public class Citizen {
                 ConfigClass.isLoggedIn = false;
                 try {
                       // msg = jsonresp.getString("msg");
-                    Toast.makeText(view.getContext(), jsonresp.getString("msg"), Toast.LENGTH_SHORT).show();
-                       Log.e("Response on failure",jsonresp.getString("msg"));
+                    mProgressView.setVisibility(View.GONE);
+                    mLoginFormView.setVisibility(View.VISIBLE);
+                    mSignInProgressIcon.setVisibility(View.GONE);
+                    if(jsonresp != null)
+                        Toast.makeText(view.getContext(), jsonresp.getString("msg"), Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(view.getContext(), "Unable to connect check your connection !", Toast.LENGTH_SHORT).show();
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -225,10 +237,14 @@ public class Citizen {
                     ConfigClass.isLoggedIn = true;
 
                     Log.e("Response in success" ,responseString.getString("token")+"");
+
                     /* Opening hospitals list activity*/
                     Context context = view.getContext();
                     Intent intent = new Intent(context, MapsActivity.class);
                     context.startActivity(intent);
+                    mProgressView.setVisibility(View.GONE);
+                    mLoginFormView.setVisibility(View.VISIBLE);
+                    mSignInProgressIcon.setVisibility(View.GONE);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -240,7 +256,12 @@ public class Citizen {
      * SignUp function
      */
     public void SignUp(View view){
-
+        View mLoginFormView = view.getRootView().findViewById(R.id.login_form);
+        View mProgressView = view.getRootView().findViewById(R.id.login_progress);
+        View mSignUpProgressIcon = view.getRootView().findViewById(R.id.ProgressIcon);
+        mProgressView.setVisibility(View.VISIBLE);
+        mLoginFormView.setVisibility(View.GONE);
+        mSignUpProgressIcon.setVisibility(View.VISIBLE);
         Citizen cit = this;
         // adding typed data into http request parameters
         RequestParams params = new RequestParams();
@@ -269,10 +290,14 @@ public class Citizen {
                     //  ConfigClass.token = responseString.getString("");
 
                     //  ConfigClass.isLoggedIn = true;
-                    Toast.makeText(view.getContext(),errorResponse.getString("error"), Toast.LENGTH_SHORT).show();
-                    Log.e("Response in Error" ,errorResponse.getString("error"));
-                    //  StartActivity(SignupActivity.this,MainActivity.class);
-                    //setToastMessage(errorMessage);
+                    mProgressView.setVisibility(View.GONE);
+                    mLoginFormView.setVisibility(View.VISIBLE);
+                    mSignUpProgressIcon.setVisibility(View.GONE);
+                    if(errorResponse != null)
+                        Toast.makeText(view.getContext(),errorResponse.getString("error"), Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(view.getContext(), "Unable to connect check your connection !", Toast.LENGTH_SHORT).show();
+
 
                 } catch (JSONException e) {
 
@@ -291,6 +316,9 @@ public class Citizen {
                     Log.e("Response in success" ,responseString.getString("success"));
                     // StartActivity(SignupActivity.this,MainActivity.class);
                     cit.SignIn(view);
+                    mProgressView.setVisibility(View.GONE);
+                    mLoginFormView.setVisibility(View.VISIBLE);
+                    mSignUpProgressIcon.setVisibility(View.GONE);
 
                 } catch (JSONException e) {
 
