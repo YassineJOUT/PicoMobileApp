@@ -30,6 +30,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URISyntaxException;
@@ -45,8 +46,11 @@ import ma.fstm.ilisi.pico.picomobile.Model.Ambulance;
 import ma.fstm.ilisi.pico.picomobile.Model.Hospital;
 import ma.fstm.ilisi.pico.picomobile.R;
 import ma.fstm.ilisi.pico.picomobile.Repository.PicoWebRestClient;
+import ma.fstm.ilisi.pico.picomobile.Utilities.ConfigClass;
 import ma.fstm.ilisi.pico.picomobile.viewmodel.AmbulanceViewModel;
 import ma.fstm.ilisi.pico.picomobile.viewmodel.HospitalsViewModel;
+
+import static ma.fstm.ilisi.pico.picomobile.Utilities.ConfigClass.token;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         LocationListener, GoogleMap.OnMapClickListener,
@@ -85,7 +89,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
 
-        socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
+       /* socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
 
             @Override
             public void call(Object... args) {
@@ -105,6 +109,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         });
         socket.connect();
+        */
+
 
 
     }
@@ -112,10 +118,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void  sendAlarm() {
 
 
-        String host = "http://pico.ossrv.nl:9090/";
+        String host = "http://pico.ossrv.nl:9090";
         RequestParams params = new RequestParams();
 
-        params.put("ambulance_id", "5bf54f597f47c57269b73f1e");
+        params.put("ambulance_id", "5bf54f597f47c57269b73f1c");
+
+        PicoWebRestClient.setUp("Authorization",ConfigClass.token);
 
         PicoWebRestClient.setUp("Content-Type","application/x-www-form-urlencoded");
 
@@ -123,7 +131,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
-                Log.e("Success", "yess");
+                Log.e("Success", "yes");
             }
 
             @Override
@@ -153,7 +161,40 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 sendAlarm();
             }
 
+        }).on("AMBULANCE_POSITION_CHANGE_EVENT", new Emitter.Listener() {
+
+                    @Override
+                    public void call(Object... args) {
+                        JSONObject obj = (JSONObject)args[0];
+                        try {
+                            Log.e("Socket status : ",obj.getString("latitude")+"");
+                            Log.e("Socket status : ",obj.getString("longitude")+"");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                }).on("connect", new Emitter.Listener() {
+
+            @Override
+            public void call(Object... args) {
+                //logElt.innerHTML = 'Socket connected';
+                socket.emit("CITIZEN_AUNTENTICATION_EVENT", "{ "+ConfigClass.token+" }");
+            }
+
         });
+
+
+    }
+
+
+    public void changePosition() {
+
+              double   longitude = Math.random() * 100000;
+              double  latitude =Math.random() * 100000;
+        socket.emit("POSITION_CHANGE_EVENT", "{"+latitude+":"+longitude+"}");
+
 
     }
 
@@ -223,6 +264,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                  }
              }
          });
+        socketAuthentication();
+        changePosition();
     }
 
     @Override
