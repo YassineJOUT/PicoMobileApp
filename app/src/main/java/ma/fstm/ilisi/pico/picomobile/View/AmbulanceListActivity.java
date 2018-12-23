@@ -1,17 +1,21 @@
 package ma.fstm.ilisi.pico.picomobile.View;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.shapes.Shape;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import java.util.ArrayList;
@@ -20,16 +24,11 @@ import ma.fstm.ilisi.pico.picomobile.Model.Ambulance;
 import ma.fstm.ilisi.pico.picomobile.R;
 
 public class AmbulanceListActivity extends AppCompatActivity {
-    // Array of strings...
-    String[] mobileArray = {"Android","IPhone","WindowsMobile","Blackberry",
-            "WebOS","Ubuntu","Windows7","Max OS X"};
     //8 elements
     int [] images = {R.drawable.ic_launcher_background, R.drawable.ic_launcher_background,
             R.drawable.ic_launcher_background, R.drawable.ic_launcher_background,
             R.drawable.ic_launcher_background, R.drawable.ic_launcher_background,
             R.drawable.ic_launcher_background, R.drawable.ic_launcher_background};
-    //String[] matricules = {"123654K5M","123654K5M", "123654K5M", "123654K5M", "123654K5M","123654K5M", "123654K5M", "123654K5M"};
-    //Boolean[] available = {true, false, false, true, false, true, true, true};
     ArrayList<Ambulance> ambulances = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +39,21 @@ public class AmbulanceListActivity extends AppCompatActivity {
         CustomAdapter customAdapter = new CustomAdapter();
         listView.setAdapter(customAdapter);
 
-         ambulances = getIntent().getParcelableArrayListExtra("ambulances");
+        ambulances = getIntent().getParcelableArrayListExtra("ambulances");
+
+
+        Intent intent = new Intent(this, AmbulanceDetailActivity.class);
+        listView.setItemsCanFocus(true);
+        // Set an item click listener for ListView
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener()  {
+            @Override
+            public void onItemClick (AdapterView < ? > adapter, View view,int position, long arg){
+
+                //Toast.makeText(getApplicationContext(), "selected Item position is " + ambulances.get(position), Toast.LENGTH_LONG).show();
+                intent.putExtra("ambulance", (Ambulance) ambulances.get(position));
+                startActivity(intent);
+            }
+        });
 
     }
     class CustomAdapter extends BaseAdapter{
@@ -52,7 +65,7 @@ public class AmbulanceListActivity extends AppCompatActivity {
 
         @Override
         public Object getItem(int position) {
-            return null;
+            return ambulances.get(position);
         }
 
         @Override
