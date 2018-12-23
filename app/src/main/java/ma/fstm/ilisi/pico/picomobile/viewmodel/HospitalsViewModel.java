@@ -49,41 +49,6 @@ public class HospitalsViewModel extends ViewModel {
 
     }
 
-    public void postData(){
-        String host = "http://192.168.43.163:9090";
-        RequestParams params = new RequestParams();
-
-        params.put("ambulance_id", "5bf54f597f47c57269b73f1c");
-
-        PicoWebRestClientSync.setUp("Authorization",ConfigClass.token);
-
-        PicoWebRestClientSync.setUp("Content-Type","application/x-www-form-urlencoded");
-
-        PicoWebRestClientSync.post("alarms/citizens",params, new JsonHttpResponseHandler(){
-
-            @Override
-            public void setUseSynchronousMode(boolean sync) {
-                super.setUseSynchronousMode(sync);
-                if (!sync)
-                sync = true;
-            }
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                super.onSuccess(statusCode, headers, response);
-                Log.e("Success", "yes");
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-
-                Log.e("Error", "Error");
-
-            }
-        });
-
-    }
     public LiveData<List<Hospital>> onRefreshClicked()  {
         final MutableLiveData<List<Hospital>> data = new MutableLiveData<>();
         Log.e("Response in Error" ,ConfigClass.isLoggedIn+"");

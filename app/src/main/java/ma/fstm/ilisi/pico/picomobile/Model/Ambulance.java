@@ -3,9 +3,18 @@ package ma.fstm.ilisi.pico.picomobile.Model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+
+import org.json.JSONObject;
+
+import cz.msebera.android.httpclient.Header;
+import ma.fstm.ilisi.pico.picomobile.Repository.PicoWebRestClientSync;
+import ma.fstm.ilisi.pico.picomobile.Utilities.ConfigClass;
 
 public class Ambulance implements Parcelable {
 
@@ -97,6 +106,55 @@ public class Ambulance implements Parcelable {
         this.available = p.readInt() == 0 ? false : true;
         this.latitude = p.readDouble();
         this.longitude = p.readDouble();
+    }
+
+    public void BookAnAmbulance(){
+        Thread thread = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                try  {
+                    //Your code goes here
+                    RequestParams params = new RequestParams();
+
+                    params.put("ambulance_id", id);
+
+                    PicoWebRestClientSync.setUp("Authorization",ConfigClass.token);
+
+                    PicoWebRestClientSync.setUp("Content-Type","application/x-www-form-urlencoded");
+
+                    PicoWebRestClientSync.post("alarms/citizens",params, new JsonHttpResponseHandler(){
+
+                        @Override
+                        public void setUseSynchronousMode(boolean sync) {
+                            super.setUseSynchronousMode(sync);
+                            if (!sync)
+                                sync = true;
+                        }
+
+                        @Override
+                        public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                            super.onSuccess(statusCode, headers, response);
+                            Log.e("Success", "yes");
+                        }
+
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                            super.onFailure(statusCode, headers, throwable, errorResponse);
+
+                            Log.e("Error", "Error");
+
+                        }
+                    });
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        thread.start();
+
     }
 
 }
