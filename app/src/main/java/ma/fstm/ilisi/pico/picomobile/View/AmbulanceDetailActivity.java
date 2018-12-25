@@ -38,14 +38,21 @@ public class AmbulanceDetailActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     Log.e("Ambulance booked","A");
-                    ambulanceViewModel.doBookAnAmbulance(ambulance);
-                    Toast.makeText(AmbulanceDetailActivity.this,"You have booked an ambulance",Toast.LENGTH_LONG);
-                    startActivity(new Intent(AmbulanceDetailActivity.this,MapsActivity.class));
+                    ambulanceViewModel.doBookAnAmbulance(ambulance,
+                            AmbulanceDetailActivity.this).observe(AmbulanceDetailActivity.this,driver -> {
+                                Log.e("an ambulance ","is booked ");
+                        if(driver != null){
+                            Toast.makeText(AmbulanceDetailActivity.this,
+                                    "You have booked an ambulance",Toast.LENGTH_LONG);
+                            Log.e("Driver",driver.getDriverFullName());
+                           Intent intent = new Intent(AmbulanceDetailActivity.this,MapsActivity.class);
+                           intent.putExtra("driver",driver);
+                           AmbulanceDetailActivity.this.startActivity(intent);
+                        }
+                    });
+
                 }
             });
-            ambulanceViewModel.doBookAnAmbulance(ambulance);
-
-
     }
 }
 // for commit

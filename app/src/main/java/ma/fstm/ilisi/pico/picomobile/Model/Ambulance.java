@@ -1,16 +1,24 @@
 
 package ma.fstm.ilisi.pico.picomobile.Model;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.lang.reflect.Type;
+import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
 import ma.fstm.ilisi.pico.picomobile.Repository.PicoWebRestClientSync;
@@ -108,7 +116,8 @@ public class Ambulance implements Parcelable {
         this.longitude = p.readDouble();
     }
 
-    public void BookAnAmbulance(){
+    public LiveData<Driver> BookAnAmbulance()  {
+            final MutableLiveData<Driver> data = new MutableLiveData<>();
         Thread thread = new Thread(new Runnable() {
 
             @Override
@@ -136,6 +145,18 @@ public class Ambulance implements Parcelable {
                         public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                             super.onSuccess(statusCode, headers, response);
                             Log.e("Success", "yes");
+                            Gson gson = new Gson();
+
+                            String content = null;
+                            try {
+                                content = response.getString("driver").toString()+"";
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            Type listType = new TypeToken<Driver>() {}.getType();
+                            // hospitals =
+                            data.postValue(gson.fromJson(content,listType));
+
                         }
 
                         @Override
@@ -143,6 +164,8 @@ public class Ambulance implements Parcelable {
                             super.onFailure(statusCode, headers, throwable, errorResponse);
 
                             Log.e("Error", "Error");
+
+                            data.postValue(null);
 
                         }
                     });
@@ -154,6 +177,8 @@ public class Ambulance implements Parcelable {
         });
 
         thread.start();
+
+        return data;
 
     }
 
