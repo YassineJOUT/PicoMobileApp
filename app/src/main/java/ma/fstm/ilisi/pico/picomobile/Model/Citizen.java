@@ -194,6 +194,7 @@ public class Citizen {
         mProgressView.setVisibility(View.VISIBLE);
         mLoginFormView.setVisibility(View.GONE);
         mSignInProgressIcon.setVisibility(View.VISIBLE);
+
         String MsgErr = "Success";
         /* adding parameters to the http request */
         RequestParams params = new RequestParams();

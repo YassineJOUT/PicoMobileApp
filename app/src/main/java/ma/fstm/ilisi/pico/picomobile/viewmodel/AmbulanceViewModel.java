@@ -3,7 +3,9 @@ package ma.fstm.ilisi.pico.picomobile.viewmodel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
+import android.content.Intent;
 import android.util.Log;
+import android.view.View;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -19,9 +21,12 @@ import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
 import ma.fstm.ilisi.pico.picomobile.Model.Ambulance;
+import ma.fstm.ilisi.pico.picomobile.Model.Driver;
 import ma.fstm.ilisi.pico.picomobile.Model.Hospital;
 import ma.fstm.ilisi.pico.picomobile.Repository.PicoWebRestClient;
 import ma.fstm.ilisi.pico.picomobile.Utilities.ConfigClass;
+import ma.fstm.ilisi.pico.picomobile.View.AmbulanceDetailActivity;
+import ma.fstm.ilisi.pico.picomobile.View.MapsActivity;
 
 public class AmbulanceViewModel  extends ViewModel {
 
@@ -38,8 +43,15 @@ public class AmbulanceViewModel  extends ViewModel {
     private String successMessage = "Sign in was successful";
     private String errorMessage = "field invalid not valid";
 
-    public void doBookAnAmbulance(Ambulance amb) {
-        amb.BookAnAmbulance();
+    public MutableLiveData<Driver> doBookAnAmbulance(Ambulance amb, AmbulanceDetailActivity v) {
+
+        final MutableLiveData<Driver> data = new MutableLiveData<>();
+        amb.BookAnAmbulance().observe(v,driver -> {
+            if(driver != null){
+                data.setValue(driver);
+            }
+        });
+        return data;
     }
 
     public AmbulanceViewModel() {
@@ -49,12 +61,9 @@ public class AmbulanceViewModel  extends ViewModel {
 
     public LiveData<List<Ambulance>> onRefreshClicked(Hospital hospital)  {
         final MutableLiveData<List<Ambulance>> data = new MutableLiveData<>();
-        Log.e("Response in Error" ,ConfigClass.isLoggedIn+"");
         if(ConfigClass.isLoggedIn){
 
             PicoWebRestClient.setUp("Authorization",ConfigClass.token);
-
-            String AmbId = "5bf546f27f47c57269b73cbf";
             PicoWebRestClient.get("hospitals/citizens/"+hospital.get_id()+"/ambulances", null, new JsonHttpResponseHandler() {
 
                 @Override

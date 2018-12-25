@@ -7,7 +7,7 @@ import com.loopj.android.http.SyncHttpClient;
 
 public class PicoWebRestClientSync{
     // Url to the api
-    private static final String BASE_URL = "http://192.168.43.163:9090/api/";
+    private static final String BASE_URL = "http://"+PicoWebRestClient.IPAddr+":9090/api/";
     // Asynchronous Http client
     private static SyncHttpClient client = new SyncHttpClient();
     // adding the content type to the header

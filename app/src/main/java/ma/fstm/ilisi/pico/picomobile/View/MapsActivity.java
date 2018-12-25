@@ -46,6 +46,7 @@ import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 import ma.fstm.ilisi.pico.picomobile.Directions.ViewModel.DirectionsViewModel;
 import ma.fstm.ilisi.pico.picomobile.Model.Ambulance;
+import ma.fstm.ilisi.pico.picomobile.Model.Driver;
 import ma.fstm.ilisi.pico.picomobile.Model.Hospital;
 import ma.fstm.ilisi.pico.picomobile.R;
 import ma.fstm.ilisi.pico.picomobile.Repository.PicoWebRestClient;
@@ -131,6 +132,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void DrawPolyLine(Location loc){
+        if(lastLocation == null ) return ;
+
         directionsViewModel = ViewModelProviders.of(this).get(DirectionsViewModel.class);
 
         directionsViewModel.getDirectionsLiveData(lastLocation.getLatitude()+","+lastLocation.getLongitude(),
@@ -173,7 +176,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     ambulanceMarker = mMap.addMarker(
                             new MarkerOptions()
                                     .position(new LatLng(obj.getDouble("latitude"), obj.getDouble("longitude")))
-                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.pointer50x50)));
                     Log.e("Socket status ; : ",obj.getDouble("latitude")+"");
                     Log.e("Socket status ; : ",obj.getDouble("longitude")+"");
                     Location loc = new Location(locationProvider);
@@ -183,23 +186,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
-
-
             }
         });
     }
     public void socketAuthentication() {
 
         try {
-            socket = IO.socket("http://192.168.43.163:9090?userType=CITIZEN_SOCKET_TYPE");
+            socket = IO.socket("http://"+PicoWebRestClient.IPAddr+":9090?userType=CITIZEN_SOCKET_TYPE");
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
-
-
         socket.on("CITIZEN_AUTH_SUCCESS_EVENT", new Emitter.Listener() {
-
             @Override
             public void call(Object... args) {
                 Log.e("Socket status : ","Socket authenticated");
@@ -207,7 +204,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
 
         }).on("AMBULANCE_POSITION_CHANGE_EVENT", new Emitter.Listener() {
-
                     @Override
                     public void call(Object... args) {
                         JSONObject obj = (JSONObject)args[0];
@@ -281,31 +277,39 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.getUiSettings().setZoomControlsEnabled(true);
 
         lastLocation = locationManager.getLastKnownLocation(locationProvider);
-        Log.e("Last known location",lastLocation.getLatitude()+"");
         // mMap.addMarker(new MarkerOptions().position(new LatLng(lastLocation.getLatitude(),lastLocation.getLongitude())).title("Myloc"));
         mMap.setOnMapClickListener(this);
 
         // get hospitals view model
         hospitalsViewModel = ViewModelProviders.of(this).get(HospitalsViewModel.class);
-        if(!isAmbBooked)
-        // adding hospitals markers on the map
-         hospitalsViewModel.onRefreshClicked().observe(this,hospitals -> {
+        if(!isAmbBooked){
 
-             if(hospitals != null){
-                 for (Hospital h :hospitals
-                         ) {
+            // adding hospitals markers on the map
+            hospitalsViewModel.onRefreshClicked().observe(this,hospitals -> {
 
-                     hospitalMarkerHash.put(
-                     mMap.addMarker(
-                             new MarkerOptions()
-                                     .position(new LatLng(h.getLatitude(),h.getLongitude()))
-                                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
-                     .title(h.getName())),h);
-                 }
-             }
-         });
+                if(hospitals != null){
+                    for (Hospital h :hospitals
+                            ) {
 
-        socketAuthentication();
+                        hospitalMarkerHash.put(
+                                mMap.addMarker(
+                                        new MarkerOptions()
+                                                .position(new LatLng(h.getLatitude(),h.getLongitude()))
+                                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+                                                .title(h.getName())),h);
+                    }
+                }
+            });
+
+            socketAuthentication();
+        }else{
+            Driver d =  this.getIntent().getParcelableExtra("driver");
+            if(d!=null){
+                Log.e("Driver from intent ",d.getDriverFullName());
+                Log.e("Driver from intent ",d.getAmbulanceRegistrationNumber());
+            }
+        }
+
     }
 
     @Override
@@ -354,10 +358,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapClick(LatLng latLng) {
         if (targetMarker != null) targetMarker.remove();
-        targetMarker = mMap.addMarker(
-                new MarkerOptions()
-                        .position(latLng)
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+
         Location loc = new Location("");
         loc.setLatitude(latLng.latitude);
         loc.setLongitude(latLng.longitude);

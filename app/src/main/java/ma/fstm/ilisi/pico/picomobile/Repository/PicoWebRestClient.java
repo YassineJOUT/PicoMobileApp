@@ -11,7 +11,9 @@ import com.loopj.android.http.*;
  */
 public class PicoWebRestClient  {
     // Url to the api
-    private static final String BASE_URL = "http://192.168.43.163:9090/api/";
+    public static final String IPAddr = "pico.ossrv.nl";
+    //public static final String IPAddr = "172.17.36.43";
+    private static final String BASE_URL = "http://"+IPAddr+":9090/api/";
     // Asynchronous Http client
     private static AsyncHttpClient client = new AsyncHttpClient();
     // adding the content type to the header
