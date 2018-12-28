@@ -5,17 +5,20 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
+import android.content.Context;
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
 import android.os.Build;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ProgressBar;
 
 import com.android.databinding.library.baseAdapters.BR;
 
 import ma.fstm.ilisi.pico.picomobile.Model.Citizen;
 import ma.fstm.ilisi.pico.picomobile.R;
+import ma.fstm.ilisi.pico.picomobile.View.LoginActivity;
 
 /**
  * LoginViewModel class
@@ -79,6 +82,8 @@ public class LoginViewModel extends BaseObservable {
      *
      */
     public void onLoginClicked(View view) {
+
+
 
         // if typed data is valid
         if (citizen.isDataInputValidForLogin()){
