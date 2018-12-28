@@ -116,8 +116,8 @@ public class Ambulance implements Parcelable {
         this.longitude = p.readDouble();
     }
 
-    public LiveData<Driver> BookAnAmbulance()  {
-            final MutableLiveData<Driver> data = new MutableLiveData<>();
+    public LiveData<String> BookAnAmbulance()  {
+            final MutableLiveData<String> data = new MutableLiveData<>();
         Thread thread = new Thread(new Runnable() {
 
             @Override
@@ -145,17 +145,16 @@ public class Ambulance implements Parcelable {
                         public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                             super.onSuccess(statusCode, headers, response);
                             Log.e("Success", "yes");
-                            Gson gson = new Gson();
-
+                          //  Gson gson = new Gson();
                             String content = null;
                             try {
-                                content = response.getString("driver").toString()+"";
+                                content = response.getString("alarm_id").toString()+"";
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
-                            Type listType = new TypeToken<Driver>() {}.getType();
+                           // Type listType = new TypeToken<Driver>() {}.getType();
                             // hospitals =
-                            data.postValue(gson.fromJson(content,listType));
+                            data.postValue(content);
 
                         }
 

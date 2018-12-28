@@ -34,6 +34,8 @@ public class AmbulanceDetailActivity extends AppCompatActivity {
         }
 
             ambulanceViewModel = ViewModelProviders.of(this).get(AmbulanceViewModel.class);
+        ((Button)findViewById(R.id.detailCancelButton)).setVisibility(View.INVISIBLE);
+        ((Button)findViewById(R.id.detailCancelButton)).setEnabled(false);
             findViewById(R.id.detailBookButton).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -42,12 +44,16 @@ public class AmbulanceDetailActivity extends AppCompatActivity {
                             AmbulanceDetailActivity.this).observe(AmbulanceDetailActivity.this,driver -> {
                                 Log.e("an ambulance ","is booked ");
                         if(driver != null){
+                            v.setEnabled(false);
+                            ((Button)v).setText("Wating ...");
+                            ((Button)findViewById(R.id.detailCancelButton)).setVisibility(View.VISIBLE);
+                            ((Button)findViewById(R.id.detailCancelButton)).setEnabled(true);
                             Toast.makeText(AmbulanceDetailActivity.this,
                                     "You have booked an ambulance",Toast.LENGTH_LONG);
-                            Log.e("Driver",driver.getDriverFullName());
-                           Intent intent = new Intent(AmbulanceDetailActivity.this,MapsActivity.class);
+                            Log.e("alarm ID ",driver);
+                           /*Intent intent = new Intent(AmbulanceDetailActivity.this,MapsActivity.class);
                            intent.putExtra("driver",driver);
-                           AmbulanceDetailActivity.this.startActivity(intent);
+                           AmbulanceDetailActivity.this.startActivity(intent);*/
                         }
                     });
 
