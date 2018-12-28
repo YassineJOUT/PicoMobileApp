@@ -8,8 +8,8 @@
 
     <ImageView
         android:id="@+id/ambulanceDetailImageView"
-        android:layout_width="123dp"
-        android:layout_height="122dp"
+        android:layout_width="match_parent"
+        android:layout_height="259dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
@@ -23,20 +23,36 @@
         android:id="@+id/detailMatriculeTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_marginStart="57dp"
-        android:layout_marginLeft="57dp"
-        android:layout_marginTop="33dp"
-        android:layout_marginEnd="61dp"
-        android:layout_marginRight="61dp"
-        android:layout_toEndOf="@+id/ambulanceDetailImageView"
-        android:layout_toRightOf="@+id/ambulanceDetailImageView"
+        android:layout_marginStart="147dp"
+        android:layout_marginTop="321dp"
+        android:layout_marginEnd="159dp"
+        android:layout_marginRight="159dp"
         android:text="Hello world !" />
 
     <Button
         android:id="@+id/detailBookButton"
+        android:layout_width="111dp"
+        android:layout_height="45dp"
+        android:layout_below="@+id/detailMatriculeTextView"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginStart="213dp"
+        android:layout_marginLeft="213dp"
+        android:layout_marginTop="61dp"
+        android:layout_marginEnd="60dp"
+        android:layout_marginRight="60dp"
+        android:text="Book"
+        android:textColor="@color/colorWhite" />
+
+    <Button
+        android:id="@+id/detailCancelButton"
         android:layout_width="111dp"
         android:layout_height="37dp"
         android:layout_below="@+id/detailMatriculeTextView"
@@ -45,13 +61,14 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_gravity="center_horizontal"
-        android:layout_marginStart="199dp"
-        android:layout_marginLeft="199dp"
-        android:layout_marginTop="27dp"
-        android:layout_marginEnd="74dp"
-        android:layout_marginRight="74dp"
-        android:text="Book"
-        android:textColor="@color/colorWhite" />
+        android:layout_marginStart="63dp"
+        android:layout_marginLeft="63dp"
+        android:layout_marginTop="64dp"
+        android:layout_marginEnd="210dp"
+        android:layout_marginRight="210dp"
+        android:background="@color/colorNoInternetGradStartH"
+        android:text="Cancel"
+        android:textColor="@color/black" />
 
 </RelativeLayout>
 
