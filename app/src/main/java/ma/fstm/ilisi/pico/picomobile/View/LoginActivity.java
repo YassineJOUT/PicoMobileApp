@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -53,13 +54,23 @@ public class LoginActivity extends AppCompatActivity {
                    // finish();
                    //overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                    findViewById(R.id.sign_in_button).setEnabled(true);
+
+
                }
            });
        }else{
            findViewById(R.id.sign_in_button).setEnabled(false);
            Toast.makeText(this,"Check you internet connexion",Toast.LENGTH_LONG).show();
            buildDialog(this).show();
+           hideKeyBoard();
        }
+    }
+    private void hideKeyBoard(){
+        View view =        LoginActivity.this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
     @BindingAdapter({"toastMessage"})
     public static void runMe(View view, String message) {

@@ -67,10 +67,11 @@ tools:context=".View.LoginActivity">
                 android:id="@+id/phoneNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/prompt_number"
                 android:afterTextChanged="@{(editable)->viewModel.afterPhoneTextChanged(editable)}"
+                android:hint="@string/prompt_number"
                 android:maxLines="1"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:text="0612938342" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -82,14 +83,15 @@ tools:context=".View.LoginActivity">
                 android:id="@+id/password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:afterTextChanged="@{(editable)->viewModel.afterPasswordTextChanged(editable)}"
                 android:hint="@string/prompt_password"
                 android:imeActionId="6"
                 android:imeActionLabel="@string/action_sign_in_short"
                 android:imeOptions="actionUnspecified"
-                android:afterTextChanged="@{(editable)->viewModel.afterPasswordTextChanged(editable)}"
                 android:inputType="textPassword"
                 android:maxLines="1"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:text="yassine" />
 
         </android.support.design.widget.TextInputLayout>
 

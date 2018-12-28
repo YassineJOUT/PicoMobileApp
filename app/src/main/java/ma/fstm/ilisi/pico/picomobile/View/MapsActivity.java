@@ -11,11 +11,18 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -35,11 +42,16 @@ import org.json.JSONObject;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.net.ssl.HostnameVerifier;
 
+import butterknife.BindView;
 import cz.msebera.android.httpclient.Header;
 import io.socket.client.IO;
 import io.socket.client.Socket;
@@ -54,6 +66,8 @@ import ma.fstm.ilisi.pico.picomobile.Utilities.ConfigClass;
 import ma.fstm.ilisi.pico.picomobile.viewmodel.AmbulanceViewModel;
 import ma.fstm.ilisi.pico.picomobile.viewmodel.HospitalsViewModel;
 
+import static java.util.Map.Entry.comparingByValue;
+import static java.util.stream.Collectors.toMap;
 import static ma.fstm.ilisi.pico.picomobile.Utilities.ConfigClass.token;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
@@ -82,6 +96,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private boolean isAmbBooked ;
     MapsActivity me = MapsActivity.this;
 
+
+
+    @BindView(R.id.bottom_sheet)
+    LinearLayout layoutBottomSheet;
+
+    BottomSheetBehavior sheetBehavior;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,30 +115,59 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         isAmbBooked = false ;
 
+        sheetBehavior = BottomSheetBehavior.from(findViewById(R.id.bottom_sheet));
 
-       /* socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
-
+        /**
+         * bottom sheet state change listener
+         * we are changing button text when sheet changed state
+         * */
+        sheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
-            public void call(Object... args) {
-                socket.emit("foo", "hi");
-                socket.disconnect();
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                switch (newState) {
+                    case BottomSheetBehavior.STATE_HIDDEN:
+                        break;
+                    case BottomSheetBehavior.STATE_EXPANDED: {
+//                        btnBottomSheet.setText("Close Sheet");
+                    }
+                    break;
+                    case BottomSheetBehavior.STATE_COLLAPSED: {
+         //               btnBottomSheet.setText("Expand Sheet");
+                    }
+                    break;
+                    case BottomSheetBehavior.STATE_DRAGGING:
+                        break;
+                    case BottomSheetBehavior.STATE_SETTLING:
+                        break;
+                }
             }
 
-        }).on("event", new Emitter.Listener() {
-
             @Override
-            public void call(Object... args) {}
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+                if(!hospitalMarkerHash.isEmpty()){
+                    Map.Entry<Hospital,Float> nearestHospital = getNearestHospital() ;
+                    if(nearestHospital != null){
+                        ((TextView) findViewById(R.id.bs_hospitalName)).setText(nearestHospital.getKey().getName());
+                        ((TextView) findViewById(R.id.bs_distance)).setText("Dist : "+nearestHospital.getValue()+"");
+                        ambulanceViewModel = ViewModelProviders.of(MapsActivity.this).get(AmbulanceViewModel.class);
 
-        }).on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
+                        Hospital h = nearestHospital.getKey();
+                        ambulanceViewModel.onRefreshClicked(h)
+                                .observe(MapsActivity.this,ambulances -> {
+                            if(ambulances != null){
+                                if(!ambulances.isEmpty()){
+                                   Ambulance amb = ambulances.get(0);
 
-            @Override
-            public void call(Object... args) {}
+                                    ((TextView) findViewById(R.id.bs_amb_RN)).setText("Registration number : "+amb.getRegistrationNumber());
+                                }
 
+
+                            }
+                        });
+                    }
+                }
+            }
         });
-        socket.connect();
-        */
-
-
 
     }
 
@@ -231,8 +280,66 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+    /**
+     *
+     * getHospital with the nearest distance
+     */
 
+    public LinkedHashMap<Hospital, Float> sortHashMapByValues(
+            HashMap<Hospital, Float>  passedMap) {
+        List<Hospital> mapKeys = new ArrayList<>(passedMap.keySet());
+        List<Float> mapValues = new ArrayList<>(passedMap.values());
+        Collections.sort(mapValues);
 
+        LinkedHashMap<Hospital, Float> sortedMap =
+                new LinkedHashMap<>();
+
+        Iterator<Float> valueIt = mapValues.iterator();
+        while (valueIt.hasNext()) {
+            Float val = valueIt.next();
+            Iterator<Hospital> keyIt = mapKeys.iterator();
+
+            while (keyIt.hasNext()) {
+                Hospital key = keyIt.next();
+                Float comp1 = passedMap.get(key);
+                Float comp2 = val;
+
+                if (comp1.equals(comp2)) {
+                    keyIt.remove();
+                    sortedMap.put(key, val);
+                    break;
+                }
+            }
+        }
+        return sortedMap;
+    }
+   public Map.Entry<Hospital,Float> getNearestHospital(){
+
+       HashMap<Hospital,Float> hospitalDistanceMap = new HashMap<>();
+        if (!hospitalMarkerHash.isEmpty()) {
+           double[] distances = new double[hospitalMarkerHash.size()];
+           int i = 0;
+           for (Map.Entry<Marker, Hospital> entry : hospitalMarkerHash.entrySet()) {
+               Hospital h = entry.getValue();
+               Location l = new Location("jps") ;
+
+               l.setLatitude(h.getLatitude());
+               l.setLongitude(h.getLongitude());
+
+               lastLocation = mMap.getMyLocation();
+               if(lastLocation != null){
+                   hospitalDistanceMap.put(h,lastLocation.distanceTo(l));
+               }
+           }
+           if(!hospitalDistanceMap.isEmpty()){
+              return sortHashMapByValues(hospitalDistanceMap).entrySet().iterator().next();
+           }
+
+           else return null;
+       }
+
+       return  null;
+    }
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
@@ -268,6 +375,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             return;
         }
 
+
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         locationProvider = locationManager.getBestProvider(new Criteria(), false);
         locationManager.requestLocationUpdates(locationProvider, 1, 10, this);
@@ -280,6 +388,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // mMap.addMarker(new MarkerOptions().position(new LatLng(lastLocation.getLatitude(),lastLocation.getLongitude())).title("Myloc"));
         mMap.setOnMapClickListener(this);
 
+       // mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(, 15));
         // get hospitals view model
         hospitalsViewModel = ViewModelProviders.of(this).get(HospitalsViewModel.class);
         if(!isAmbBooked){
@@ -288,9 +397,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             hospitalsViewModel.onRefreshClicked().observe(this,hospitals -> {
 
                 if(hospitals != null){
-                    for (Hospital h :hospitals
-                            ) {
-
+                    for (Hospital h :hospitals) {
                         hospitalMarkerHash.put(
                                 mMap.addMarker(
                                         new MarkerOptions()
@@ -298,6 +405,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
                                                 .title(h.getName())),h);
                     }
+
                 }
             });
 
@@ -310,11 +418,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
 
+
+
+
     }
 
     @Override
     public void onLocationChanged(Location location) {
 
+        Log.e("Location ","changed");
         Log.d("location", "My location  " + location.getLatitude());
         lastLocation = location;
 
@@ -331,17 +443,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
-
+        Log.e("status ","changed");
     }
 
     @Override
     public void onProviderEnabled(String provider) {
 
+        Log.e("Provider ","enabled");
     }
 
     @Override
     public void onProviderDisabled(String provider) {
-
+        Log.e("Provider ","disabled");
     }
 
     @Override
@@ -357,7 +470,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onMapClick(LatLng latLng) {
-        if (targetMarker != null) targetMarker.remove();
+     /*   if (targetMarker != null) targetMarker.remove();
 
         Location loc = new Location("");
         loc.setLatitude(latLng.latitude);
@@ -368,6 +481,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         double dist = lastLocation.distanceTo(loc);
         Log.e("Distance ",dist+"");
+        */
 
     }
     @Override
@@ -383,7 +497,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             }
         });
-
+/*
+        if (sheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED) {
+            sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+//            btnBottomSheet.setText("Close sheet");
+        } else {
+            sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+    //        btnBottomSheet.setText("Expand sheet");
+        }*/
         return false;
     }
 }
