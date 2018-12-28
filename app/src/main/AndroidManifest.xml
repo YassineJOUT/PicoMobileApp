@@ -49,6 +49,7 @@
         <activity
             android:name=".View.MapsActivity"
             android:label="@string/title_activity_maps"
+            android:theme="@style/AppTheme.Map"
             android:launchMode="singleTask" />
         <activity
             android:name=".View.MapsActivity2"
