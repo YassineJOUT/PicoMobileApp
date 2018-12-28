@@ -43,19 +43,17 @@ public class AmbulanceViewModel  extends ViewModel {
     private String successMessage = "Sign in was successful";
     private String errorMessage = "field invalid not valid";
 
-    public MutableLiveData<Driver> doBookAnAmbulance(Ambulance amb, AmbulanceDetailActivity v) {
+    public MutableLiveData<String> doBookAnAmbulance(Ambulance amb, AmbulanceDetailActivity v) {
 
-        final MutableLiveData<Driver> data = new MutableLiveData<>();
-        amb.BookAnAmbulance().observe(v,driver -> {
-            if(driver != null){
-                data.setValue(driver);
-            }
+        final MutableLiveData<String> data = new MutableLiveData<>();
+        amb.BookAnAmbulance().observe(v,alarmId -> {
+
+                data.setValue(alarmId);
+
         });
         return data;
     }
-
     public AmbulanceViewModel() {
-
 
     }
 

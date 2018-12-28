@@ -70,9 +70,6 @@ import ma.fstm.ilisi.pico.picomobile.Utilities.ConfigClass;
 import ma.fstm.ilisi.pico.picomobile.viewmodel.AmbulanceViewModel;
 import ma.fstm.ilisi.pico.picomobile.viewmodel.HospitalsViewModel;
 
-import static java.util.Map.Entry.comparingByValue;
-import static java.util.stream.Collectors.toMap;
-import static ma.fstm.ilisi.pico.picomobile.Utilities.ConfigClass.token;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback,
         LocationListener, GoogleMap.OnMapClickListener,
@@ -82,7 +79,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private LocationManager locationManager;
     private String locationProvider;
-    private Location lastLocation;
+    private Location lastLocation ;
 
     private Marker ambulanceMarker;
     private Marker targetMarker;
@@ -161,18 +158,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             if(ambulances != null){
                                 if(!ambulances.isEmpty()){
                                    Ambulance amb = ambulances.get(0);
-
                                     ((TextView) findViewById(R.id.bs_amb_RN)).setText("Registration number : "+amb.getRegistrationNumber());
                                 }
-
-
                             }
                         });
                     }
                 }
             }
         });
-
     }
 
     public  void removeHospitals(){
@@ -420,6 +413,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Log.e("Driver from intent ",d.getDriverFullName());
                 Log.e("Driver from intent ",d.getAmbulanceRegistrationNumber());
             }
+        }
+
+        if(lastLocation == null){
+            lastLocation = new Location("");
+            lastLocation.setLatitude(33.699995 );
+            lastLocation.setLongitude(-7.362469);
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude()), ConfigClass.zoomCity));
         }
 
 

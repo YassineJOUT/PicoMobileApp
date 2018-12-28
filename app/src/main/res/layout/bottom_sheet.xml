@@ -69,6 +69,7 @@
             android:id="@+id/bs_ambulanceImageView"
             android:layout_width="76dp"
             android:layout_height="76dp"
+            android:visibility="visible"
             app:srcCompat="@drawable/amb1" />
 
         <TextView
