@@ -1,7 +1,9 @@
 package ma.fstm.ilisi.pico.picomobile.View;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -81,6 +83,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private String locationProvider;
     private Location lastLocation ;
 
+    private  Ambulance nearestAmbulance;
     private Marker ambulanceMarker;
     private Marker targetMarker;
 
@@ -118,6 +121,32 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         sheetBehavior = BottomSheetBehavior.from(findViewById(R.id.bottom_sheet));
 
+       Button  bs_btn_book = findViewById(R.id.bs_Book);
+        ((Button)findViewById(R.id.bs_Cancel)).setVisibility(View.INVISIBLE);
+        ((Button)findViewById(R.id.bs_Cancel)).setEnabled(false);
+       bs_btn_book.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+               Log.e("Ambulance booked","A");
+               if(nearestAmbulance != null)
+               ambulanceViewModel.doBookAnAmbulance(nearestAmbulance,
+                       MapsActivity.this).observe(MapsActivity.this,driver -> {
+                   Log.e("an ambulance ","is booked ");
+                   if(driver != null){
+                       v.setEnabled(false);
+                       ((Button)v).setText("Wating ...");
+                       ((Button)findViewById(R.id.bs_Cancel)).setVisibility(View.VISIBLE);
+                       ((Button)findViewById(R.id.bs_Cancel)).setEnabled(true);
+                       Toast.makeText(MapsActivity.this,
+                               "You have booked an ambulance",Toast.LENGTH_LONG);
+                       Log.e("alarm ID ",driver);
+                           /*Intent intent = new Intent(AmbulanceDetailActivity.this,MapsActivity.class);
+                           intent.putExtra("driver",driver);
+                           AmbulanceDetailActivity.this.startActivity(intent);*/
+                   }
+               });
+           }
+       });
         /**
          * bottom sheet state change listener
          * we are changing button text when sheet changed state
@@ -146,7 +175,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onSlide(@NonNull View bottomSheet, float slideOffset) {
                 if(!hospitalMarkerHash.isEmpty()){
-                    Map.Entry<Hospital,Float> nearestHospital = getNearestHospital() ;
+                    LinkedHashMap<Hospital,Float> hmHospitals = getNearestHospital() ;
+                    Map.Entry<Hospital,Float> nearestHospital = null ;
+                    if(hmHospitals != null){
+                        nearestHospital = hmHospitals.entrySet().iterator().next();
+                    }
                     if(nearestHospital != null){
                         ((TextView) findViewById(R.id.bs_hospitalName)).setText(nearestHospital.getKey().getName());
                         ((TextView) findViewById(R.id.bs_distance)).setText("Dist : "+nearestHospital.getValue()+"");
@@ -157,8 +190,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 .observe(MapsActivity.this,ambulances -> {
                             if(ambulances != null){
                                 if(!ambulances.isEmpty()){
-                                   Ambulance amb = ambulances.get(0);
-                                    ((TextView) findViewById(R.id.bs_amb_RN)).setText("Registration number : "+amb.getRegistrationNumber());
+                                    nearestAmbulance = ambulances.get(0);
+                                    ((TextView) findViewById(R.id.bs_amb_RN)).setText("Registration number : "+nearestAmbulance.getRegistrationNumber());
                                 }
                             }
                         });
@@ -310,7 +343,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         return sortedMap;
     }
-   public Map.Entry<Hospital,Float> getNearestHospital(){
+   public LinkedHashMap<Hospital,Float> getNearestHospital(){
 
        HashMap<Hospital,Float> hospitalDistanceMap = new HashMap<>();
         if (!hospitalMarkerHash.isEmpty()) {
@@ -329,7 +362,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                }
            }
            if(!hospitalDistanceMap.isEmpty()){
-              return sortHashMapByValues(hospitalDistanceMap).entrySet().iterator().next();
+              return sortHashMapByValues(hospitalDistanceMap);
            }
 
            else return null;
@@ -491,11 +524,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public boolean onMarkerClick(Marker marker) {
 
+
         ambulanceViewModel = ViewModelProviders.of(this).get(AmbulanceViewModel.class);
         Intent intent = new Intent(this, AmbulanceListActivity.class);
         hospitalMarkerHash.get(marker);
         ambulanceViewModel.onRefreshClicked(hospitalMarkerHash.get(marker)).observe(this,ambulances -> {
             if(ambulances != null){
+                intent.putExtra("myPosition",lastLocation);
                 intent.putParcelableArrayListExtra("ambulances", (ArrayList<Ambulance>) ambulances);
                 startActivity(intent);
 
@@ -530,6 +565,26 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 // do your code
                 return true;
             case R.id.logout:
+
+            {
+                new AlertDialog.Builder(this)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setTitle("Closing Pico")
+                        .setMessage("Are you sure you want to logout and exit the app ?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                ConfigClass.isLoggedIn = false ;
+                                ConfigClass.token = "";
+                                finish();
+                            }
+
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
+
+            }
                 // do your code
                 return true;
             default:

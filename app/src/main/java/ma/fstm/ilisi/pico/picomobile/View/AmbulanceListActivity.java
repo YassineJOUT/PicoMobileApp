@@ -2,25 +2,22 @@ package ma.fstm.ilisi.pico.picomobile.View;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.shapes.Shape;
+import android.location.Location;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import java.util.ArrayList;
 
 import ma.fstm.ilisi.pico.picomobile.Model.Ambulance;
+import ma.fstm.ilisi.pico.picomobile.Model.Citizen;
 import ma.fstm.ilisi.pico.picomobile.R;
 
 public class AmbulanceListActivity extends AppCompatActivity {
@@ -30,6 +27,8 @@ public class AmbulanceListActivity extends AppCompatActivity {
             R.drawable.amb5, R.drawable.amb6,
             R.drawable.amb7, R.drawable.amb8};
     ArrayList<Ambulance> ambulances = new ArrayList<>();
+    Location CitizenLocation;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,7 +39,7 @@ public class AmbulanceListActivity extends AppCompatActivity {
         listView.setAdapter(customAdapter);
 
         ambulances = getIntent().getParcelableArrayListExtra("ambulances");
-
+         CitizenLocation = getIntent().getParcelableExtra("myPostion");
 
         Intent ambulanceDetailsIntent = new Intent(this, AmbulanceDetailActivity.class);
         listView.setItemsCanFocus(true);
@@ -79,10 +78,20 @@ public class AmbulanceListActivity extends AppCompatActivity {
             convertView = getLayoutInflater().inflate(R.layout.ambulances_list_view, null);
             ImageView imageView = (ImageView) convertView.findViewById(R.id.ambulanceImageView);
             TextView textViewMatricule = (TextView) convertView.findViewById(R.id.ambulanceMatriculeTextView);
+            TextView textViewDistance = (TextView) convertView.findViewById(R.id.Lv_Dist);
             ToggleButton toggleButtonAvailable = (ToggleButton) convertView.findViewById(R.id.toggleButtonAvailable);
 
             imageView.setImageResource(images[position]);
             textViewMatricule.setText(ambulances.get(position).getRegistrationNumber());
+            Location loc = new Location("gps");
+            loc.setLatitude(ambulances.get(position).getLatitude());
+            loc.setLatitude(ambulances.get(position).getLongitude());
+            Float distance = 0f;
+            if(CitizenLocation != null){
+                distance = loc.distanceTo(CitizenLocation);
+                textViewDistance.setText(distance+"");
+            }
+
             if(ambulances.get(position).getAvailable())
                 toggleButtonAvailable.setBackgroundColor(Color.parseColor("#19d32f"));
             else

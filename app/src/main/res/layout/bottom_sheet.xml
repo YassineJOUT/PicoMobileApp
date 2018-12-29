@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/bottom_sheet"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -49,8 +50,7 @@
     <TextView
         android:id="@+id/bs_hospitalName"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Chicken Fried Rice 1x1" />
+        android:layout_height="wrap_content" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -60,33 +60,107 @@
         android:textColor="@color/primary"
         android:textStyle="bold" />
 
-    <LinearLayout
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:id="@+id/linearLayout">
 
         <ImageView
             android:id="@+id/bs_ambulanceImageView"
-            android:layout_width="76dp"
-            android:layout_height="76dp"
+            android:layout_width="110dp"
+            android:layout_height="82dp"
+            android:layout_marginStart="2dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginEnd="14dp"
+            android:layout_marginRight="14dp"
             android:visibility="visible"
-            app:srcCompat="@drawable/amb1" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/bs_amb_RN"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.13999999"
+            app:srcCompat="@drawable/amb1"
+            tools:layout_conversion_absoluteHeight="76dp"
+            tools:layout_conversion_absoluteWidth="76dp" />
 
         <TextView
             android:id="@+id/bs_amb_RN"
-            android:layout_width="229dp"
-            android:layout_margin="12dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ambulance information" />
+            android:layout_marginStart="14dp"
+            android:layout_marginLeft="14dp"
+            android:layout_marginTop="22dp"
+            android:layout_marginEnd="227dp"
+            android:layout_marginRight="227dp"
+            android:layout_marginBottom="41dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/bs_ambulanceImageView"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0"
+            tools:layout_conversion_absoluteHeight="19dp"
+            tools:layout_conversion_absoluteWidth="229dp" />
 
-    </LinearLayout>
+        <RatingBar
 
-    <Button
+            android:id="@+id/ratingBar"
+            style="?android:attr/ratingBarStyleSmall"
+            android:layout_width="80dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginLeft="32dp"
+            android:layout_marginTop="59dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="3dp"
+            android:isIndicator="false"
+            android:numStars="5"
+            android:stepSize="1.0"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.282"
+            app:layout_constraintStart_toEndOf="@+id/bs_ambulanceImageView"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0"
+            tools:layout_conversion_absoluteHeight="16dp"
+            tools:layout_conversion_absoluteWidth="46dp" />
+
+    </android.support.constraint.ConstraintLayout>
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:foreground="?attr/selectableItemBackground"
-        android:text="Book now!"
-        android:textColor="#fff" />
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/bs_Book"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="22dp"
+            android:layout_marginRight="22dp"
+            android:foreground="?attr/selectableItemBackground"
+            android:text="Book now!"
+            android:textColor="#fff" />
+
+        <Button
+            android:id="@+id/bs_Cancel"
+            android:layout_width="150dp"
+            android:layout_height="35dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="7dp"
+            android:layout_marginEnd="183dp"
+            android:layout_marginRight="183dp"
+            android:background="@color/colorNoInternetGradCenterH"
+            android:foreground="?attr/selectableItemBackground"
+            android:text="Cancel"
+            android:enabled="false"
+            android:textColor="#fff" />
+    </RelativeLayout>
 
 </LinearLayout>
