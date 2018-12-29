@@ -14,7 +14,6 @@ import android.widget.Toast;
 
 import ma.fstm.ilisi.pico.picomobile.R;
 import ma.fstm.ilisi.pico.picomobile.Utilities.ConfigClass;
-import ma.fstm.ilisi.pico.picomobile.databinding.ActivityMainBinding;
 import ma.fstm.ilisi.pico.picomobile.viewmodel.LoginViewModel;
 import  ma.fstm.ilisi.pico.picomobile.Utilities.*;
 
@@ -24,29 +23,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mContext = this;
-        ActivityMainBinding activityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        activityMainBinding.setViewModel(new LoginViewModel());
-        activityMainBinding.executePendingBindings();
 
-        Button btn = (Button)findViewById(R.id.SignUpBtn);
-
-        btn.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this,SignupActivity.class));
-            }
-        });
-         btn1 = new Button(this);
-
-        btn1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this,HospitalsActivity.class));
-            }
-        });
-        startActivity(new Intent(this, LoginActivity.class));
 
 
     }

@@ -52,9 +52,6 @@
             android:theme="@style/AppTheme.Map"
             android:launchMode="singleTask" />
         <activity
-            android:name=".View.MapsActivity2"
-            android:label="@string/title_activity_maps2" />
-        <activity
             android:name=".View.AmbulanceListActivity"
             android:label="@string/title_activity_ambulance_list" />
         <activity android:name=".View.AmbulanceDetailActivity" />

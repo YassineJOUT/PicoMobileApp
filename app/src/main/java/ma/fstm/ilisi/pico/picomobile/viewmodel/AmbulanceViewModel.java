@@ -4,6 +4,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
@@ -43,13 +44,11 @@ public class AmbulanceViewModel  extends ViewModel {
     private String successMessage = "Sign in was successful";
     private String errorMessage = "field invalid not valid";
 
-    public MutableLiveData<String> doBookAnAmbulance(Ambulance amb, AmbulanceDetailActivity v) {
+    public MutableLiveData<String> doBookAnAmbulance(Ambulance amb, AppCompatActivity v) {
 
         final MutableLiveData<String> data = new MutableLiveData<>();
         amb.BookAnAmbulance().observe(v,alarmId -> {
-
                 data.setValue(alarmId);
-
         });
         return data;
     }
@@ -70,11 +69,11 @@ public class AmbulanceViewModel  extends ViewModel {
                     try {
 
 
-                        errorResponse.getString(0);
+                        //errorResponse.getString(0);
 
                         data.setValue(null);
 
-                    } catch (JSONException e) {
+                    } catch (Exception e) {
 
                         e.printStackTrace();
                     }
