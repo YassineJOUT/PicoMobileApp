@@ -9,7 +9,8 @@ public class ConfigClass {
     public static String token = "";
     // true if a citizen is logged in
     public static boolean isLoggedIn = false ;
-    //
+
+    // Zoom options
    // 1: World
     public static float zoomWord = 1f;
     //5: Landmass/continent

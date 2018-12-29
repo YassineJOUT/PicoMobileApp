@@ -158,7 +158,31 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     case BottomSheetBehavior.STATE_HIDDEN:
                         break;
                     case BottomSheetBehavior.STATE_EXPANDED: {
+                        if(!hospitalMarkerHash.isEmpty()){
+                            LinkedHashMap<Hospital,Float> hmHospitals = getNearestHospital() ;
+                            Map.Entry<Hospital,Float> nearestHospital = null ;
+                            if(hmHospitals != null){
+                                nearestHospital = hmHospitals.entrySet().iterator().next();
+                            }
+                            if(nearestHospital != null){
+                                ((TextView) findViewById(R.id.bs_hospitalName)).setText(nearestHospital.getKey().getName());
+                                ((TextView) findViewById(R.id.bs_distance)).setText("Dist : "+nearestHospital.getValue()+"");
+                                ambulanceViewModel = ViewModelProviders.of(MapsActivity.this).get(AmbulanceViewModel.class);
+
+                                Hospital h = nearestHospital.getKey();
+                                ambulanceViewModel.onRefreshClicked(h)
+                                        .observe(MapsActivity.this,ambulances -> {
+                                            if(ambulances != null){
+                                                if(!ambulances.isEmpty()){
+                                                    nearestAmbulance = ambulances.get(0);
+                                                    ((TextView) findViewById(R.id.bs_amb_RN)).setText("Registration number : "+nearestAmbulance.getRegistrationNumber());
+                                                }
+                                            }
+                                        });
+                            }
+                        }
 //                        btnBottomSheet.setText("Close Sheet");
+
                     }
                     break;
                     case BottomSheetBehavior.STATE_COLLAPSED: {
@@ -174,29 +198,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             @Override
             public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-                if(!hospitalMarkerHash.isEmpty()){
-                    LinkedHashMap<Hospital,Float> hmHospitals = getNearestHospital() ;
-                    Map.Entry<Hospital,Float> nearestHospital = null ;
-                    if(hmHospitals != null){
-                        nearestHospital = hmHospitals.entrySet().iterator().next();
-                    }
-                    if(nearestHospital != null){
-                        ((TextView) findViewById(R.id.bs_hospitalName)).setText(nearestHospital.getKey().getName());
-                        ((TextView) findViewById(R.id.bs_distance)).setText("Dist : "+nearestHospital.getValue()+"");
-                        ambulanceViewModel = ViewModelProviders.of(MapsActivity.this).get(AmbulanceViewModel.class);
 
-                        Hospital h = nearestHospital.getKey();
-                        ambulanceViewModel.onRefreshClicked(h)
-                                .observe(MapsActivity.this,ambulances -> {
-                            if(ambulances != null){
-                                if(!ambulances.isEmpty()){
-                                    nearestAmbulance = ambulances.get(0);
-                                    ((TextView) findViewById(R.id.bs_amb_RN)).setText("Registration number : "+nearestAmbulance.getRegistrationNumber());
-                                }
-                            }
-                        });
-                    }
-                }
             }
         });
     }

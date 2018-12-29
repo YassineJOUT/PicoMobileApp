@@ -60,20 +60,36 @@
         android:textColor="@color/primary"
         android:textStyle="bold" />
 
-    <android.support.constraint.ConstraintLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:id="@+id/linearLayout">
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/bs_amb_RN"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="135dp"
+            android:layout_marginLeft="135dp"
+            android:layout_marginTop="13dp"
+            android:text="Reg number" />
 
         <ImageView
             android:id="@+id/bs_ambulanceImageView"
             android:layout_width="110dp"
             android:layout_height="82dp"
-            android:layout_marginStart="2dp"
-            android:layout_marginLeft="2dp"
-            android:layout_marginEnd="14dp"
-            android:layout_marginRight="14dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginStart="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginEnd="239dp"
+            android:layout_marginRight="239dp"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/bs_amb_RN"
@@ -84,49 +100,26 @@
             tools:layout_conversion_absoluteHeight="76dp"
             tools:layout_conversion_absoluteWidth="76dp" />
 
-        <TextView
-            android:id="@+id/bs_amb_RN"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="14dp"
-            android:layout_marginLeft="14dp"
-            android:layout_marginTop="22dp"
-            android:layout_marginEnd="227dp"
-            android:layout_marginRight="227dp"
-            android:layout_marginBottom="41dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/bs_ambulanceImageView"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0"
-            tools:layout_conversion_absoluteHeight="19dp"
-            tools:layout_conversion_absoluteWidth="229dp" />
-
         <RatingBar
 
             android:id="@+id/ratingBar"
             style="?android:attr/ratingBarStyleSmall"
-            android:layout_width="80dp"
-            android:layout_height="20dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginLeft="32dp"
+            android:layout_width="105dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginStart="170dp"
+            android:layout_marginLeft="170dp"
             android:layout_marginTop="59dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginBottom="3dp"
-            android:isIndicator="false"
+            android:layout_marginEnd="79dp"
+            android:layout_marginRight="79dp"
+            android:isIndicator="true"
             android:numStars="5"
-            android:stepSize="1.0"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.282"
-            app:layout_constraintStart_toEndOf="@+id/bs_ambulanceImageView"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0"
-            tools:layout_conversion_absoluteHeight="16dp"
-            tools:layout_conversion_absoluteWidth="46dp" />
-
-    </android.support.constraint.ConstraintLayout>
+            android:stepSize="1.0" />
+    </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -161,6 +154,7 @@
             android:text="Cancel"
             android:enabled="false"
             android:textColor="#fff" />
+
     </RelativeLayout>
 
 </LinearLayout>
