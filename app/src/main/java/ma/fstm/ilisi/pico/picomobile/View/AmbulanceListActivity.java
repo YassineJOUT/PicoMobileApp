@@ -1,10 +1,14 @@
 package ma.fstm.ilisi.pico.picomobile.View;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -14,11 +18,16 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 
 import ma.fstm.ilisi.pico.picomobile.Model.Ambulance;
 import ma.fstm.ilisi.pico.picomobile.Model.Citizen;
 import ma.fstm.ilisi.pico.picomobile.R;
+import ma.fstm.ilisi.pico.picomobile.Utilities.ConfigClass;
+import ma.fstm.ilisi.pico.picomobile.Utilities.DownloadImageTask;
 
 public class AmbulanceListActivity extends AppCompatActivity {
     //8 elements
@@ -81,7 +90,13 @@ public class AmbulanceListActivity extends AppCompatActivity {
             TextView textViewDistance = (TextView) convertView.findViewById(R.id.Lv_Dist);
             ToggleButton toggleButtonAvailable = (ToggleButton) convertView.findViewById(R.id.toggleButtonAvailable);
 
-            imageView.setImageResource(images[position]);
+
+            // get image from the api
+            new DownloadImageTask(imageView)
+                    .execute(ConfigClass.buildUrl("ambulances",ambulances.get(position).getId()));
+
+
+
             textViewMatricule.setText(ambulances.get(position).getRegistrationNumber());
             Location loc = new Location("gps");
             loc.setLatitude(ambulances.get(position).getLatitude());
@@ -102,5 +117,6 @@ public class AmbulanceListActivity extends AppCompatActivity {
 
         }
     }
+
 }
 // for commit
