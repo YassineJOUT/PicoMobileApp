@@ -26,6 +26,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -177,6 +178,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                             if(ambulances != null){
                                                 if(!ambulances.isEmpty()){
                                                     nearestAmbulance = ambulances.get(0);
+                                                    RatingBar tb = findViewById(R.id.bs_ratingBar);
+                                                    Double rate = nearestAmbulance.getRating();
+                                                    if(rate == null)
+                                                        tb.setRating(0);
+                                                    else
+                                                        tb.setRating(Float.valueOf(rate+"")*5);
+                                                    Log.e("rating ",rate+"");
                                                     ((TextView) findViewById(R.id.bs_amb_RN)).setText("Registration number : "+nearestAmbulance.getRegistrationNumber());
                                                     // get image from the api
                                                     new DownloadImageTask((ImageView) findViewById(R.id.bs_ambulanceImageView))

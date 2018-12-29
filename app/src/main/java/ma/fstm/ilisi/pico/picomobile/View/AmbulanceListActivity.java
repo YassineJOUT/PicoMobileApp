@@ -15,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -48,7 +49,7 @@ public class AmbulanceListActivity extends AppCompatActivity {
         listView.setAdapter(customAdapter);
 
         ambulances = getIntent().getParcelableArrayListExtra("ambulances");
-         CitizenLocation = getIntent().getParcelableExtra("myPostion");
+        CitizenLocation = getIntent().getParcelableExtra("myPosition");
 
         Intent ambulanceDetailsIntent = new Intent(this, AmbulanceDetailActivity.class);
         listView.setItemsCanFocus(true);
@@ -89,14 +90,20 @@ public class AmbulanceListActivity extends AppCompatActivity {
             TextView textViewMatricule = (TextView) convertView.findViewById(R.id.ambulanceMatriculeTextView);
             TextView textViewDistance = (TextView) convertView.findViewById(R.id.Lv_Dist);
             ToggleButton toggleButtonAvailable = (ToggleButton) convertView.findViewById(R.id.toggleButtonAvailable);
-
+            RatingBar tb = convertView.findViewById(R.id.lv_ratingBar);
 
             // get image from the api
             new DownloadImageTask(imageView)
                     .execute(ConfigClass.buildUrl("ambulances",ambulances.get(position).getId()));
 
 
+            Double rate = ambulances.get(position).getRating();
+            if(rate == null)
+                tb.setRating(0);
+            else
+                tb.setRating(Float.valueOf(ambulances.get(position).getRating()+"")*5);
 
+            Log.e("rating ",rate+"");
             textViewMatricule.setText(ambulances.get(position).getRegistrationNumber());
             Location loc = new Location("gps");
             loc.setLatitude(ambulances.get(position).getLatitude());

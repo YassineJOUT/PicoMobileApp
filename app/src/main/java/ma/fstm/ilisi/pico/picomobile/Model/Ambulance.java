@@ -42,6 +42,18 @@ public class Ambulance implements Parcelable {
     @Expose
     private Double longitude;
 
+    public Double getRating() {
+        return rating;
+    }
+
+    public void setRating(Double rating) {
+        this.rating = rating;
+    }
+
+    @SerializedName("rating")
+    @Expose
+    private Double rating;
+
     public String getId() {
         return id;
     }
@@ -105,6 +117,7 @@ public class Ambulance implements Parcelable {
         dest.writeInt(available ? 1 : 0);
         dest.writeDouble(latitude);
         dest.writeDouble(longitude);
+        dest.writeDouble(rating);
     }
 
 
@@ -114,6 +127,7 @@ public class Ambulance implements Parcelable {
         this.available = p.readInt() == 0 ? false : true;
         this.latitude = p.readDouble();
         this.longitude = p.readDouble();
+        this.rating = p.readDouble();
     }
 
     public LiveData<String> BookAnAmbulance()  {

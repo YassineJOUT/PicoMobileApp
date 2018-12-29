@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,9 +26,15 @@ public class AmbulanceDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_ambulance_detail);
         ambulance = getIntent().getParcelableExtra("ambulance");
 
+
         TextView detailMatriculeTextView = (TextView) findViewById(R.id.detailMatriculeTextView);
         Button detailBookButton = (Button) findViewById(R.id.detailBookButton);
-
+        Double rate = ambulance.getRating();
+        RatingBar tb = findViewById(R.id.ratingBar);
+        if(rate == null)
+            tb.setRating(0);
+        else
+            tb.setRating(Float.valueOf(rate+"")*5);
         detailMatriculeTextView.setText(ambulance.getRegistrationNumber());
         if(!ambulance.getAvailable()){
             detailBookButton.setEnabled(false);
@@ -34,8 +42,8 @@ public class AmbulanceDetailActivity extends AppCompatActivity {
         }
 
             ambulanceViewModel = ViewModelProviders.of(this).get(AmbulanceViewModel.class);
-        ((Button)findViewById(R.id.detailCancelButton)).setVisibility(View.INVISIBLE);
-        ((Button)findViewById(R.id.detailCancelButton)).setEnabled(false);
+           ((Button)findViewById(R.id.detailCancelButton)).setVisibility(View.INVISIBLE);
+            ((Button)findViewById(R.id.detailCancelButton)).setEnabled(false);
             findViewById(R.id.detailBookButton).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
