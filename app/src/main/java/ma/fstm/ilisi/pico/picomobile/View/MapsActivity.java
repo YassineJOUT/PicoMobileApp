@@ -24,6 +24,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -69,6 +70,7 @@ import ma.fstm.ilisi.pico.picomobile.Model.Hospital;
 import ma.fstm.ilisi.pico.picomobile.R;
 import ma.fstm.ilisi.pico.picomobile.Repository.PicoWebRestClient;
 import ma.fstm.ilisi.pico.picomobile.Utilities.ConfigClass;
+import ma.fstm.ilisi.pico.picomobile.Utilities.DownloadImageTask;
 import ma.fstm.ilisi.pico.picomobile.viewmodel.AmbulanceViewModel;
 import ma.fstm.ilisi.pico.picomobile.viewmodel.HospitalsViewModel;
 
@@ -158,7 +160,34 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     case BottomSheetBehavior.STATE_HIDDEN:
                         break;
                     case BottomSheetBehavior.STATE_EXPANDED: {
+                        if(!hospitalMarkerHash.isEmpty()){
+                            LinkedHashMap<Hospital,Float> hmHospitals = getNearestHospital() ;
+                            Map.Entry<Hospital,Float> nearestHospital = null ;
+                            if(hmHospitals != null){
+                                nearestHospital = hmHospitals.entrySet().iterator().next();
+                            }
+                            if(nearestHospital != null){
+                                ((TextView) findViewById(R.id.bs_hospitalName)).setText(nearestHospital.getKey().getName());
+                                ((TextView) findViewById(R.id.bs_distance)).setText("Dist : "+nearestHospital.getValue()+"");
+                                ambulanceViewModel = ViewModelProviders.of(MapsActivity.this).get(AmbulanceViewModel.class);
+
+                                Hospital h = nearestHospital.getKey();
+                                ambulanceViewModel.onRefreshClicked(h)
+                                        .observe(MapsActivity.this,ambulances -> {
+                                            if(ambulances != null){
+                                                if(!ambulances.isEmpty()){
+                                                    nearestAmbulance = ambulances.get(0);
+                                                    ((TextView) findViewById(R.id.bs_amb_RN)).setText("Registration number : "+nearestAmbulance.getRegistrationNumber());
+                                                    // get image from the api
+                                                    new DownloadImageTask((ImageView) findViewById(R.id.bs_ambulanceImageView))
+                                                            .execute(ConfigClass.buildUrl("ambulances",nearestAmbulance.getId()));
+                                                }
+                                            }
+                                        });
+                            }
+                        }
 //                        btnBottomSheet.setText("Close Sheet");
+
                     }
                     break;
                     case BottomSheetBehavior.STATE_COLLAPSED: {
@@ -174,29 +203,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             @Override
             public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-                if(!hospitalMarkerHash.isEmpty()){
-                    LinkedHashMap<Hospital,Float> hmHospitals = getNearestHospital() ;
-                    Map.Entry<Hospital,Float> nearestHospital = null ;
-                    if(hmHospitals != null){
-                        nearestHospital = hmHospitals.entrySet().iterator().next();
-                    }
-                    if(nearestHospital != null){
-                        ((TextView) findViewById(R.id.bs_hospitalName)).setText(nearestHospital.getKey().getName());
-                        ((TextView) findViewById(R.id.bs_distance)).setText("Dist : "+nearestHospital.getValue()+"");
-                        ambulanceViewModel = ViewModelProviders.of(MapsActivity.this).get(AmbulanceViewModel.class);
 
-                        Hospital h = nearestHospital.getKey();
-                        ambulanceViewModel.onRefreshClicked(h)
-                                .observe(MapsActivity.this,ambulances -> {
-                            if(ambulances != null){
-                                if(!ambulances.isEmpty()){
-                                    nearestAmbulance = ambulances.get(0);
-                                    ((TextView) findViewById(R.id.bs_amb_RN)).setText("Registration number : "+nearestAmbulance.getRegistrationNumber());
-                                }
-                            }
-                        });
-                    }
-                }
             }
         });
     }
