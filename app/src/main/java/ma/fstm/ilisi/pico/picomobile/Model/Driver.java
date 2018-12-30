@@ -25,6 +25,9 @@ public class Driver implements Parcelable {
     @Expose
     private Double driverLatitude;
 
+    public Driver(){
+
+    }
     public String getDriverId() {
         return driverId;
     }

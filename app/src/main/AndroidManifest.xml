@@ -49,14 +49,13 @@
         <activity
             android:name=".View.MapsActivity"
             android:label="@string/title_activity_maps"
-            android:theme="@style/AppTheme.Map"
-            android:launchMode="singleTask" />
+            android:launchMode="singleTask"
+            android:theme="@style/AppTheme.Map" />
         <activity
             android:name=".View.AmbulanceListActivity"
             android:label="@string/title_activity_ambulance_list" />
         <activity android:name=".View.AmbulanceDetailActivity" />
-
-
+        <activity android:name=".View.RatingActivity"></activity>
     </application>
 
 </manifest>

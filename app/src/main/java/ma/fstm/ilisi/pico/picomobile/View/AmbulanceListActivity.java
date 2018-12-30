@@ -85,6 +85,7 @@ public class AmbulanceListActivity extends AppCompatActivity {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
+
             convertView = getLayoutInflater().inflate(R.layout.ambulances_list_view, null);
             ImageView imageView = (ImageView) convertView.findViewById(R.id.ambulanceImageView);
             TextView textViewMatricule = (TextView) convertView.findViewById(R.id.ambulanceMatriculeTextView);
@@ -113,15 +114,11 @@ public class AmbulanceListActivity extends AppCompatActivity {
                 distance = loc.distanceTo(CitizenLocation);
                 textViewDistance.setText(distance+"");
             }
-
             if(ambulances.get(position).getAvailable())
                 toggleButtonAvailable.setBackgroundColor(Color.parseColor("#19d32f"));
             else
                 toggleButtonAvailable.setBackgroundColor(Color.parseColor("#cccccc"));
-
-
             return convertView;
-
         }
     }
 
