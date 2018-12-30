@@ -72,6 +72,7 @@ import ma.fstm.ilisi.pico.picomobile.R;
 import ma.fstm.ilisi.pico.picomobile.Repository.PicoWebRestClient;
 import ma.fstm.ilisi.pico.picomobile.Utilities.ConfigClass;
 import ma.fstm.ilisi.pico.picomobile.Utilities.DownloadImageTask;
+import ma.fstm.ilisi.pico.picomobile.Utilities.Sockets;
 import ma.fstm.ilisi.pico.picomobile.viewmodel.AmbulanceViewModel;
 import ma.fstm.ilisi.pico.picomobile.viewmodel.HospitalsViewModel;
 
@@ -89,18 +90,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private  Ambulance nearestAmbulance;
     private Marker ambulanceMarker;
     private Marker targetMarker;
+    private Driver driver;
 
     DirectionsViewModel directionsViewModel;
     HospitalsViewModel hospitalsViewModel;
     AmbulanceViewModel ambulanceViewModel;
 
     private Polyline[] polylineArray;
+    private int currentPolylineLenght;
 
     private HashMap<Marker,Hospital> hospitalMarkerHash;
 
     private Socket socket;
 
     private boolean isAmbBooked ;
+    private String last_alarm_id;
     MapsActivity me = MapsActivity.this;
 
 
@@ -161,37 +165,49 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     case BottomSheetBehavior.STATE_HIDDEN:
                         break;
                     case BottomSheetBehavior.STATE_EXPANDED: {
-                        if(!hospitalMarkerHash.isEmpty()){
-                            LinkedHashMap<Hospital,Float> hmHospitals = getNearestHospital() ;
-                            Map.Entry<Hospital,Float> nearestHospital = null ;
-                            if(hmHospitals != null){
-                                nearestHospital = hmHospitals.entrySet().iterator().next();
-                            }
-                            if(nearestHospital != null){
-                                ((TextView) findViewById(R.id.bs_hospitalName)).setText(nearestHospital.getKey().getName());
-                                ((TextView) findViewById(R.id.bs_distance)).setText("Dist : "+nearestHospital.getValue()+"");
-                                ambulanceViewModel = ViewModelProviders.of(MapsActivity.this).get(AmbulanceViewModel.class);
+                        if(!isAmbBooked) {
+                            if (!hospitalMarkerHash.isEmpty()) {
+                                LinkedHashMap<Hospital, Float> hmHospitals = getNearestHospital();
+                                Map.Entry<Hospital, Float> nearestHospital = null;
+                                if (hmHospitals != null) {
+                                    nearestHospital = hmHospitals.entrySet().iterator().next();
+                                }
+                                if (nearestHospital != null) {
+                                    setBottomSheetContent("hospital");
+                                    ((TextView) findViewById(R.id.bs_hospitalName)).setText(nearestHospital.getKey().getName());
+                                    ((TextView) findViewById(R.id.bs_distance)).setText("Dist : " + nearestHospital.getValue() + "");
+                                    ambulanceViewModel = ViewModelProviders.of(MapsActivity.this).get(AmbulanceViewModel.class);
 
-                                Hospital h = nearestHospital.getKey();
-                                ambulanceViewModel.onRefreshClicked(h)
-                                        .observe(MapsActivity.this,ambulances -> {
-                                            if(ambulances != null){
-                                                if(!ambulances.isEmpty()){
-                                                    nearestAmbulance = ambulances.get(0);
-                                                    RatingBar tb = findViewById(R.id.bs_ratingBar);
-                                                    Double rate = nearestAmbulance.getRating();
-                                                    if(rate == null)
-                                                        tb.setRating(0);
-                                                    else
-                                                        tb.setRating(Float.valueOf(rate+"")*5);
-                                                    Log.e("rating ",rate+"");
-                                                    ((TextView) findViewById(R.id.bs_amb_RN)).setText("Registration number : "+nearestAmbulance.getRegistrationNumber());
-                                                    // get image from the api
-                                                    new DownloadImageTask((ImageView) findViewById(R.id.bs_ambulanceImageView))
-                                                            .execute(ConfigClass.buildUrl("ambulances",nearestAmbulance.getId()));
+                                    Hospital h = nearestHospital.getKey();
+                                    ambulanceViewModel.onRefreshClicked(h)
+                                            .observe(MapsActivity.this, ambulances -> {
+                                                if (ambulances != null) {
+                                                    if (!ambulances.isEmpty()) {
+                                                        nearestAmbulance = ambulances.get(0);
+                                                        RatingBar tb = findViewById(R.id.bs_ratingBar);
+                                                        Double rate = nearestAmbulance.getRating();
+                                                        if (rate == null)
+                                                            tb.setRating(0);
+                                                        else
+                                                            tb.setRating(Float.valueOf(rate + "") * 5);
+                                                        Log.e("rating ", rate + "");
+                                                        ((TextView) findViewById(R.id.bs_amb_RN)).setText("Registration number : " + nearestAmbulance.getRegistrationNumber());
+                                                        // get image from the api
+                                                        new DownloadImageTask((ImageView) findViewById(R.id.bs_imageView))
+                                                                .execute(ConfigClass.buildUrl("ambulances", nearestAmbulance.getId()));
+                                                    }
                                                 }
-                                            }
-                                        });
+                                            });
+                                }
+                            }
+                        }
+                        else{
+                            if(driver != null ){
+                                setBottomSheetContent("driver");
+                                ((TextView) findViewById(R.id.bs_amb_RN)).setText("Driver name : "+driver.getDriverFullName());
+                                // get image from the api
+                                new DownloadImageTask((ImageView) findViewById(R.id.bs_imageView))
+                                        .execute(ConfigClass.buildUrl("drivers",driver.getDriverId()));
                             }
                         }
 //                        btnBottomSheet.setText("Close Sheet");
@@ -214,6 +230,45 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             }
         });
+
+
+
+    }
+    private void setBottomSheetContent(String hospOrDriver){
+        switch (hospOrDriver){
+            case "hospital" :
+                {
+                    // set Title
+                    ((TextView)findViewById(R.id.bs_Title)).setText("Nearest Hospital");
+                    // set Subtitle
+                    ((TextView)findViewById(R.id.bs_Subtitle)).setText("Ambulance");
+                    // set button to disabled and invisible
+                    ((Button)findViewById(R.id.bs_Book)).setVisibility(View.VISIBLE);
+                    ((Button)findViewById(R.id.bs_Book)).setEnabled(true);
+
+
+                }
+                 break;
+            case "driver"  :
+            {
+                // set Title
+                ((TextView)findViewById(R.id.bs_Title)).setText("Drivers Info");
+                // set Subtitle
+                ((TextView)findViewById(R.id.bs_Subtitle)).setText("Driver");
+                (findViewById(R.id.bs_distance)).setVisibility(View.INVISIBLE);
+                //
+                ((TextView)findViewById(R.id.bs_hospitalName)).setText("Status :  Mission en cours ..");
+                // set button to disabled and invisible
+                ((Button)findViewById(R.id.bs_Book)).setVisibility(View.INVISIBLE);
+                ((Button)findViewById(R.id.bs_Book)).setEnabled(false);
+
+                ((Button)findViewById(R.id.bs_Cancel)).setVisibility(View.INVISIBLE);
+                ((Button)findViewById(R.id.bs_Cancel)).setEnabled(false);
+
+
+            } break;
+        }
+
     }
 
     public  void removeHospitals(){
@@ -243,19 +298,26 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             }
                         }
                         if (polylines != null) {
+
                             polylineArray = new Polyline[polylines.length];
-                            Log.d("reached here", "reached here");
+                            currentPolylineLenght = polylines.length;
+                                    Log.d("reached here", "reached here");
                             for (int i=0;i<polylines.length;i++) {
                                 PolylineOptions options = new PolylineOptions();
+
                                 options.color(Color.MAGENTA);
                                 options.width(10);
                                 options.addAll(PolyUtil.decode(polylines[i]));
                                 polylineArray[i] = mMap.addPolyline(options);
+
                             }
                         }
                     });
         });
     }
+
+
+
     private void DrawDriverPosition(JSONObject obj){
 
         runOnUiThread(new Runnable(){
@@ -267,15 +329,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     if(ambulanceMarker != null) {
                         ambulanceMarker.remove();
                     }
+                    double latitude = obj.getDouble("latitude");
+                    double longitude = obj.getDouble("longitude");
                     ambulanceMarker = mMap.addMarker(
                             new MarkerOptions()
-                                    .position(new LatLng(obj.getDouble("latitude"), obj.getDouble("longitude")))
+                                    .position(new LatLng(latitude, longitude))
                                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.pointer50x50)));
-                    Log.e("Socket status ; : ",obj.getDouble("latitude")+"");
-                    Log.e("Socket status ; : ",obj.getDouble("longitude")+"");
+                    Log.e("Draw polyline Latitude",latitude+"");
+                    Log.e("Draw polyline longitude",longitude+"");
                     Location loc = new Location(locationProvider);
-                    loc.setLatitude(obj.getDouble("latitude"));
-                    loc.setLongitude(obj.getDouble("longitude"));
+                    loc.setLatitude(latitude);
+                    loc.setLongitude(longitude);
                     DrawPolyLine(loc);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -285,23 +349,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
     public void socketAuthentication() {
 
-        try {
-            socket = IO.socket("http://"+PicoWebRestClient.IPAddr+":9090?userType=CITIZEN_SOCKET_TYPE");
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-        socket.on("CITIZEN_AUTH_SUCCESS_EVENT", new Emitter.Listener() {
+            socket = Sockets.getInstance();
+
+            socket.on("CITIZEN_AUTH_SUCCESS_EVENT", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
                 Log.e("Socket status : ","Socket authenticated");
               //sendAlarm();
             }
 
-        }).on("AMBULANCE_POSITION_CHANGE_EVENT", new Emitter.Listener() {
+            }).on("AMBULANCE_POSITION_CHANGE_EVENT", new Emitter.Listener() {
                     @Override
                     public void call(Object... args) {
                         JSONObject obj = (JSONObject)args[0];
-                        isAmbBooked = true;
                         DrawDriverPosition(obj);
                     }
 
@@ -320,6 +380,82 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             }
 
+        }).on("MISSION_ACCOMPLISHED_EVENT", new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    // Show dialog feed back
+                    JSONObject obj = (JSONObject)args[0];
+                    try {
+                        last_alarm_id = obj.getString("alarm_id");
+                        MapsActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                new AlertDialog.Builder(MapsActivity.this)
+                                        .setIcon(android.R.drawable.ic_dialog_alert)
+                                        .setTitle("Mission Accomplished")
+                                        .setMessage("Please give your feed back about our service")
+                                        .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                                        {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                // send to feed back activity
+                                                Intent intent = new Intent(MapsActivity.this,RatingActivity.class);
+                                                intent.putExtra("alarm_id",last_alarm_id);
+                                                startActivity(intent);
+                                            }
+
+                                        }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        isAmbBooked = false ;
+                                        if(ambulanceMarker != null && currentPolylineLenght != 0){
+
+                                            ambulanceMarker.remove();
+                                            for (int i = 0 ; i< currentPolylineLenght ;i++)
+                                                polylineArray[i].remove();
+                                        }
+                                        onMapReady(mMap);
+                                    }
+                                })
+                                        .show();
+                            }
+                        });
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).on("ACCOUNT_DEACTIVATED_EVENT", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                JSONObject obj = (JSONObject)args[0];
+                try {
+                    // Logout + message
+                    Log.e("deactivation alarm id","True");
+                    MapsActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            new AlertDialog.Builder(MapsActivity.this)
+                                    .setIcon(android.R.drawable.ic_dialog_alert)
+                                    .setTitle("Fake alarm")
+                                    .setMessage("You're account has been desactivated! contact your admin :p")
+                                    .setPositiveButton("OK", new DialogInterface.OnClickListener()
+                                    {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            ConfigClass.isLoggedIn = false ;
+                                            ConfigClass.token = "";
+                                            finish();
+                                            System.exit(0);
+                                        }
+
+                                    })
+                                    .show();
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         });
         socket.connect();
 
@@ -396,6 +532,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        setBottomSheetContent("hospital");
 
         mMap = googleMap;
         mMap.setOnMarkerClickListener(this);
@@ -436,6 +573,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
        // mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(, 15));
         // get hospitals view model
         hospitalsViewModel = ViewModelProviders.of(this).get(HospitalsViewModel.class);
+        isAmbBooked =  getIntent().getBooleanExtra("isAmbBooked",false);
         if(!isAmbBooked){
 
             // adding hospitals markers on the map
@@ -456,19 +594,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             socketAuthentication();
         }else{
-            Driver d =  this.getIntent().getParcelableExtra("driver");
-            if(d!=null){
-                Log.e("Driver from intent ",d.getDriverFullName());
-                Log.e("Driver from intent ",d.getAmbulanceRegistrationNumber());
-            }
+             driver =  this.getIntent().getParcelableExtra("driver");
         }
 
         if(lastLocation == null){
             lastLocation = new Location("");
             lastLocation.setLatitude(33.699995 );
-            lastLocation.setLongitude(-7.362469);
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude()), ConfigClass.zoomCity));
-        }
+            lastLocation.setLongitude(-7.362469);}
+
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude()), ConfigClass.zoomStreets));
+
 
 
 
