@@ -461,6 +461,46 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        String resumedFromFb = intent.getStringExtra("feedBack");
+        Log.e("resumedFromFb 1",resumedFromFb+"");
+        if(mMap != null){
+
+            if(resumedFromFb != null)
+                if(resumedFromFb.equalsIgnoreCase("true")){
+
+                    ambulanceMarker.remove();
+                    isAmbBooked = false ;
+                    if(ambulanceMarker != null && currentPolylineLenght != 0){
+
+                        ambulanceMarker.remove();
+                        for (int i = 0 ; i< currentPolylineLenght ;i++)
+                            polylineArray[i].remove();
+                    }
+                    onMapReady(mMap);
+
+                }
+
+        }
+        driver =  intent.getParcelableExtra("driver_info");
+        boolean isbooked = intent.getBooleanExtra("isbooked",false);
+        isAmbBooked = isbooked;
+        Log.e("isbooked ",isbooked +"");
+        if(driver != null){
+            setBottomSheetContent("driver");
+            Log.e("new intent ","driver");
+
+        }
+
+
+
+
+    }
+
+
+
     /**
      *
      * getHospital with the nearest distance
@@ -557,6 +597,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             return;
         }
 
+        String resumedFromFb = getIntent().getStringExtra("feedBack");
+        Log.e("resumedFromFb 1 onmapr",resumedFromFb+"");
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         locationProvider = locationManager.getBestProvider(new Criteria(), false);
@@ -575,10 +617,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         hospitalsViewModel = ViewModelProviders.of(this).get(HospitalsViewModel.class);
         isAmbBooked =  getIntent().getBooleanExtra("isAmbBooked",false);
         if(!isAmbBooked){
-
             // adding hospitals markers on the map
             hospitalsViewModel.onRefreshClicked().observe(this,hospitals -> {
-
                 if(hospitals != null){
                     for (Hospital h :hospitals) {
                         hospitalMarkerHash.put(
@@ -588,26 +628,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
                                                 .title(h.getName())),h);
                     }
-
                 }
             });
+            if(lastLocation == null){
+                lastLocation = new Location("");
+                lastLocation.setLatitude(33.699995 );
+                lastLocation.setLongitude(-7.362469);}
+
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude()), ConfigClass.zoomStreets-0.5f));
+
 
             socketAuthentication();
-        }else{
-             driver =  this.getIntent().getParcelableExtra("driver");
         }
-
-        if(lastLocation == null){
-            lastLocation = new Location("");
-            lastLocation.setLatitude(33.699995 );
-            lastLocation.setLongitude(-7.362469);}
-
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude()), ConfigClass.zoomStreets));
-
-
-
-
-
     }
 
     @Override

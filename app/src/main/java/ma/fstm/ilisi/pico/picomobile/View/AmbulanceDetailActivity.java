@@ -120,11 +120,11 @@ public class AmbulanceDetailActivity extends AppCompatActivity {
                     Log.e("Driver longitude ",obj.getString("driver_longitude"));
                     alarm_id = obj.getString("alarm_id");
                     Intent intent = new Intent(AmbulanceDetailActivity.this,MapsActivity.class);
-                    intent.putExtra("driver",driver);
+                    intent.putExtra("driver_info",driver);
 
                    boolean isAmbBooked = true;
                    intent.putExtra("isbooked",isAmbBooked);
-                    startActivity(intent);
+                   AmbulanceDetailActivity.this.startActivity(intent);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -217,10 +217,7 @@ public class AmbulanceDetailActivity extends AppCompatActivity {
             });
     }
 
-    public void showRejectMessage(){
 
-
-    }
 
 }
 
