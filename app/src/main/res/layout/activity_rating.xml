@@ -73,7 +73,7 @@
             android:text="Your comment goes here" />
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/sendFB"
             android:layout_width="124dp"
             android:layout_height="68dp"
             android:layout_alignParentStart="true"
@@ -89,7 +89,7 @@
             android:text="Send feedBack" />
 
         <Button
-            android:id="@+id/button3"
+            android:id="@+id/cancelFB"
             android:layout_width="117dp"
             android:layout_height="63dp"
             android:layout_alignParentStart="true"
