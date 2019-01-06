@@ -25,6 +25,9 @@ public class Driver implements Parcelable {
     @Expose
     private Double driverLatitude;
 
+    public Driver(){
+
+    }
     public String getDriverId() {
         return driverId;
     }
@@ -87,12 +90,14 @@ public class Driver implements Parcelable {
     public void writeToParcel(Parcel parcel, int flags) {
 
         parcel.writeString(driverId);
+        parcel.writeString(driverFullName);
         parcel.writeString(ambulanceRegistrationNumber);
         parcel.writeDouble(driverLongitude);
         parcel.writeDouble(driverLatitude);
     }
     public Driver(Parcel parcel){
         driverId = parcel.readString();
+        driverFullName = parcel.readString();
         ambulanceRegistrationNumber = parcel.readString();
         driverLongitude = parcel.readDouble();
         driverLatitude = parcel.readDouble();

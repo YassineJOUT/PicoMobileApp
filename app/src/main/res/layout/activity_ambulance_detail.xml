@@ -23,14 +23,12 @@
         android:id="@+id/detailMatriculeTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_marginStart="147dp"
         android:layout_marginTop="321dp"
-        android:layout_marginEnd="159dp"
-        android:layout_marginRight="159dp"
+        android:layout_marginEnd="154dp"
+        android:layout_marginRight="154dp"
         android:text="Hello world !" />
 
     <Button
@@ -69,6 +67,22 @@
         android:background="@color/colorNoInternetGradStartH"
         android:text="Cancel"
         android:textColor="@color/black" />
+
+    <RatingBar
+
+        android:id="@+id/ratingBar"
+        style="?android:attr/ratingBarStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="45dp"
+        android:layout_marginLeft="45dp"
+        android:layout_marginTop="284dp"
+        android:isIndicator="true"
+        android:numStars="5"
+        android:stepSize="1.0" />
 
 </RelativeLayout>
 

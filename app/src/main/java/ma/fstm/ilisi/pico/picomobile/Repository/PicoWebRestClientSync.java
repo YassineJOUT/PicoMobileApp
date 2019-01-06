@@ -29,7 +29,8 @@ public class PicoWebRestClientSync{
      * @param params parameters to encapsulate in the http packet
      * @param responseHandler the http response object
      */
-    public static void get(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+    public static void get(String url, RequestParams params,
+                           AsyncHttpResponseHandler responseHandler) {
         client.get(getAbsoluteUrl(url), params, responseHandler);
     }
     /**
@@ -39,7 +40,8 @@ public class PicoWebRestClientSync{
      * @param params parameters to encapsulate in the http packet
      * @param responseHandler the http response object
      */
-    public static void post(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+    public static void post(String url, RequestParams params,
+                            AsyncHttpResponseHandler responseHandler) {
 
         client.post(getAbsoluteUrl(url), params, responseHandler);
     }

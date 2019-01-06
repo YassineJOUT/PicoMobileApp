@@ -32,18 +32,6 @@ import ma.fstm.ilisi.pico.picomobile.Repository.PicoWebRestClient;
 public class HospitalsViewModel extends ViewModel {
 
 
-    public LiveData<List<Hospital>> getHospitalList() {
-        return hospitalList;
-    }
-
-    private LiveData<List<Hospital>> hospitalList;
-    private String successMessage = "Sign in was successful";
-    private String errorMessage = "field invalid not valid";
-    LiveData<List<Hospital>> hospitals ;
-
-
-
-
     public HospitalsViewModel() {
 
 
@@ -56,18 +44,16 @@ public class HospitalsViewModel extends ViewModel {
 
             PicoWebRestClient.setUp("Authorization",ConfigClass.token);
 
-            PicoWebRestClient.get("hospitals/citizens/", null, new JsonHttpResponseHandler() {
+            PicoWebRestClient.get("hospitals/citizens/", null,
+                    new JsonHttpResponseHandler() {
 
                 @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                public void onFailure(int statusCode, Header[] headers,
+                                      Throwable throwable, JSONArray errorResponse) {
                     super.onFailure(statusCode, headers, throwable, errorResponse);
                     try {
-                        //  ConfigClass.token = responseString.getString("");
-
-                        //  ConfigClass.isLoggedIn = true;
 
                         errorResponse.getString(0);
-                        //  StartActivity(SignupActivity.this,MainActivity.class);
                         data.setValue(null);
 
                     } catch (JSONException e) {
@@ -78,13 +64,9 @@ public class HospitalsViewModel extends ViewModel {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject responseString) {
                     try {
-                        //  ConfigClass.token = responseString.getString("");
-
-                        //  ConfigClass.isLoggedIn = true;
-
                         Gson gson = new Gson();
 
-                        String content = responseString.getString("hospitals").toString()+"";
+                        String content = responseString.getString("hospitals");
                         Type listType = new TypeToken<List<Hospital>>() {}.getType();
                        // hospitals =
                         Log.e("Response in success" ,content);

@@ -12,7 +12,7 @@ import com.loopj.android.http.*;
 public class PicoWebRestClient  {
     // Url to the api
     public static final String IPAddr = "pico.ossrv.nl";
-    //public static final String IPAddr = "172.17.36.43";
+   // public static final String IPAddr = "192.168.43.163";
     private static final String BASE_URL = "http://"+IPAddr+":9090/api/";
     // Asynchronous Http client
     private static AsyncHttpClient client = new AsyncHttpClient();
@@ -35,7 +35,8 @@ public class PicoWebRestClient  {
      * @param params parameters to encapsulate in the http packet
      * @param responseHandler the http response object
      */
-    public static void get(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+    public static void get(String url, RequestParams params,
+                           AsyncHttpResponseHandler responseHandler) {
         client.get(getAbsoluteUrl(url), params, responseHandler);
     }
     /**
@@ -45,7 +46,8 @@ public class PicoWebRestClient  {
      * @param params parameters to encapsulate in the http packet
      * @param responseHandler the http response object
      */
-    public static void post(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+    public static void post(String url, RequestParams params,
+                            AsyncHttpResponseHandler responseHandler) {
 
         client.post(getAbsoluteUrl(url), params, responseHandler);
     }

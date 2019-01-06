@@ -4,6 +4,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
@@ -35,21 +36,14 @@ public class AmbulanceViewModel  extends ViewModel {
         return ambulances;
     }
 
-    public void setAmbulances(LiveData<List<Ambulance>> ambulances) {
-        this.ambulances = ambulances;
-    }
 
     private LiveData<List<Ambulance>> ambulances;
-    private String successMessage = "Sign in was successful";
-    private String errorMessage = "field invalid not valid";
 
-    public MutableLiveData<String> doBookAnAmbulance(Ambulance amb, AmbulanceDetailActivity v) {
+    public MutableLiveData<String> doBookAnAmbulance(Ambulance amb, AppCompatActivity v) {
 
         final MutableLiveData<String> data = new MutableLiveData<>();
         amb.BookAnAmbulance().observe(v,alarmId -> {
-
                 data.setValue(alarmId);
-
         });
         return data;
     }
@@ -62,19 +56,19 @@ public class AmbulanceViewModel  extends ViewModel {
         if(ConfigClass.isLoggedIn){
 
             PicoWebRestClient.setUp("Authorization",ConfigClass.token);
-            PicoWebRestClient.get("hospitals/citizens/"+hospital.get_id()+"/ambulances", null, new JsonHttpResponseHandler() {
+            PicoWebRestClient.get("hospitals/citizens/"+hospital.get_id()+"/ambulances",
+                    null, new JsonHttpResponseHandler() {
 
                 @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable,
+                                      JSONArray errorResponse) {
                     super.onFailure(statusCode, headers, throwable, errorResponse);
                     try {
 
 
-                        errorResponse.getString(0);
-
                         data.setValue(null);
 
-                    } catch (JSONException e) {
+                    } catch (Exception e) {
 
                         e.printStackTrace();
                     }
@@ -82,13 +76,10 @@ public class AmbulanceViewModel  extends ViewModel {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject responseString) {
                     try {
-                        //  ConfigClass.token = responseString.getString("");
-
-                        //  ConfigClass.isLoggedIn = true;
 
                         Gson gson = new Gson();
 
-                        String content = responseString.getString("ambulances").toString()+"";
+                        String content = responseString.getString("ambulances");
                         Type listType = new TypeToken<List<Ambulance>>() {}.getType();
                         // hospitals =
                         Log.e("Response in success" ,content);
