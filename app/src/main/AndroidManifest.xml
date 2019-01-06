@@ -55,7 +55,8 @@
             android:name=".View.AmbulanceListActivity"
             android:label="@string/title_activity_ambulance_list" />
         <activity android:name=".View.AmbulanceDetailActivity" />
-        <activity android:name=".View.RatingActivity"></activity>
+        <activity android:name=".View.RatingActivity" />
+        <activity android:name=".View.ProfileActivity"></activity>
     </application>
 
 </manifest>

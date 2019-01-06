@@ -49,7 +49,7 @@ public class Citizen {
     @NonNull
     private String password ;
     /**
-     * @param image citizen profile image
+     * @param image citizen ProfileActivity image
      */
     private Image image;
 
@@ -149,7 +149,7 @@ public class Citizen {
     }
 
     /**
-     * get profile image of the citizen
+     * get ProfileActivity image of the citizen
      * @return
      */
     public Image getImage() {
@@ -157,7 +157,7 @@ public class Citizen {
     }
 
     /**
-     * Sets the profile image of a citizen
+     * Sets the ProfileActivity image of a citizen
      * @param image
      */
     public void setImage(Image image) {
