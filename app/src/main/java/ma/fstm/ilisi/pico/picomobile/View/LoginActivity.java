@@ -44,19 +44,15 @@ public class LoginActivity extends AppCompatActivity {
        if(InternetCheck.isConnected(this)) {
 
 
-           findViewById(R.id.link_signup).setOnClickListener(new View.OnClickListener() {
-
-               @Override
-               public void onClick(View v) {
-                   // Start the Signup activity
-                   Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
-                   startActivity(intent);
-                   // finish();
-                   //overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-                   findViewById(R.id.sign_in_button).setEnabled(true);
+           findViewById(R.id.link_signup).setOnClickListener(v -> {
+               // Start the Signup activity
+               Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
+               startActivity(intent);
+               // finish();
+               //overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+               findViewById(R.id.sign_in_button).setEnabled(true);
 
 
-               }
            });
        }else{
            findViewById(R.id.sign_in_button).setEnabled(false);
@@ -90,14 +86,7 @@ public class LoginActivity extends AppCompatActivity {
         builder.setTitle("No Internet Connection");
         builder.setMessage("You need to have Mobile Data or wifi to access this. Press ok to Exit");
 
-        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-                finish();
-            }
-        });
+        builder.setPositiveButton("Ok", (dialog, which) -> finish());
 
         return builder;
     }

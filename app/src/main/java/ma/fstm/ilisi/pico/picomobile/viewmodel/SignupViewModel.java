@@ -23,7 +23,6 @@ public class SignupViewModel extends BaseObservable {
     private Citizen citizen;
     private String password;
 
-    private String successMessage = "Sign in was successful";
     private String errorMessage = "field invalid not valid";
 
 
@@ -43,7 +42,8 @@ public class SignupViewModel extends BaseObservable {
     }
 
     public SignupViewModel() {
-        citizen = new Citizen("",new GpsCoordinates(0,0),"","",null);
+        citizen = new Citizen("",new GpsCoordinates(0,0),
+                "","",null);
         password = "";
     }
     /**
@@ -100,14 +100,11 @@ public class SignupViewModel extends BaseObservable {
      *             when the signUp succeeded
      */
     public void onSignUpClicked(View view){
-
         if(citizen.isDataInputValidForSignUp() && citizen.getPassword().equals(password)){
-
                 citizen.SignUp(view);
                 Log.e(" sign up ","success");
         }
         else{
-
             setToastMessage(errorMessage);
             Log.e(" sign up ","Error");
         }

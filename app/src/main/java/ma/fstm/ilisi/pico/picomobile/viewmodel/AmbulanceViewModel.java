@@ -36,13 +36,8 @@ public class AmbulanceViewModel  extends ViewModel {
         return ambulances;
     }
 
-    public void setAmbulances(LiveData<List<Ambulance>> ambulances) {
-        this.ambulances = ambulances;
-    }
 
     private LiveData<List<Ambulance>> ambulances;
-    private String successMessage = "Sign in was successful";
-    private String errorMessage = "field invalid not valid";
 
     public MutableLiveData<String> doBookAnAmbulance(Ambulance amb, AppCompatActivity v) {
 
@@ -61,15 +56,15 @@ public class AmbulanceViewModel  extends ViewModel {
         if(ConfigClass.isLoggedIn){
 
             PicoWebRestClient.setUp("Authorization",ConfigClass.token);
-            PicoWebRestClient.get("hospitals/citizens/"+hospital.get_id()+"/ambulances", null, new JsonHttpResponseHandler() {
+            PicoWebRestClient.get("hospitals/citizens/"+hospital.get_id()+"/ambulances",
+                    null, new JsonHttpResponseHandler() {
 
                 @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable,
+                                      JSONArray errorResponse) {
                     super.onFailure(statusCode, headers, throwable, errorResponse);
                     try {
 
-
-                        //errorResponse.getString(0);
 
                         data.setValue(null);
 
@@ -81,13 +76,10 @@ public class AmbulanceViewModel  extends ViewModel {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject responseString) {
                     try {
-                        //  ConfigClass.token = responseString.getString("");
-
-                        //  ConfigClass.isLoggedIn = true;
 
                         Gson gson = new Gson();
 
-                        String content = responseString.getString("ambulances").toString()+"";
+                        String content = responseString.getString("ambulances");
                         Type listType = new TypeToken<List<Ambulance>>() {}.getType();
                         // hospitals =
                         Log.e("Response in success" ,content);
