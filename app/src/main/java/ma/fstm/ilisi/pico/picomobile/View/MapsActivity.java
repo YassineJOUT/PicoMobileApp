@@ -664,6 +664,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         switch (item.getItemId()) {
             case R.id.profile:
                 // do your code
+                startActivity(new Intent(this,ProfileActivity.class));
                 return true;
             case R.id.settings:
                 // do your code
@@ -682,7 +683,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         })
                         .setNegativeButton("No", null)
                         .show();
-
             }
                 // do your code
                 return true;
