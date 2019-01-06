@@ -31,11 +31,7 @@ import ma.fstm.ilisi.pico.picomobile.Utilities.ConfigClass;
 import ma.fstm.ilisi.pico.picomobile.Utilities.DownloadImageTask;
 
 public class AmbulanceListActivity extends AppCompatActivity {
-    //8 elements
-    int [] images = {R.drawable.amb1, R.drawable.amb2,
-            R.drawable.amb3, R.drawable.amb4,
-            R.drawable.amb5, R.drawable.amb6,
-            R.drawable.amb7, R.drawable.amb8};
+
     ArrayList<Ambulance> ambulances = new ArrayList<>();
     Location CitizenLocation;
 
@@ -44,7 +40,7 @@ public class AmbulanceListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ambulance_list);
 
-        ListView listView = (ListView) findViewById(R.id.ambulances_list_view);
+        ListView listView = findViewById(R.id.ambulances_list_view);
         CustomAdapter customAdapter = new CustomAdapter();
         listView.setAdapter(customAdapter);
 
@@ -54,14 +50,10 @@ public class AmbulanceListActivity extends AppCompatActivity {
         Intent ambulanceDetailsIntent = new Intent(this, AmbulanceDetailActivity.class);
         listView.setItemsCanFocus(true);
         // Set an item click listener for ListView
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener()  {
-            @Override
-            public void onItemClick (AdapterView < ? > adapter, View view,int position, long arg){
+        listView.setOnItemClickListener((adapter, view, position, arg) -> {
 
-                //Toast.makeText(getApplicationContext(), "selected Item position is " + ambulances.get(position), Toast.LENGTH_LONG).show();
-                ambulanceDetailsIntent.putExtra("ambulance", (Ambulance) ambulances.get(position));
-                startActivity(ambulanceDetailsIntent);
-            }
+            ambulanceDetailsIntent.putExtra("ambulance", ambulances.get(position));
+            startActivity(ambulanceDetailsIntent);
         });
 
 
@@ -87,10 +79,10 @@ public class AmbulanceListActivity extends AppCompatActivity {
         public View getView(int position, View convertView, ViewGroup parent) {
 
             convertView = getLayoutInflater().inflate(R.layout.ambulances_list_view, null);
-            ImageView imageView = (ImageView) convertView.findViewById(R.id.ambulanceImageView);
-            TextView textViewMatricule = (TextView) convertView.findViewById(R.id.ambulanceMatriculeTextView);
-            TextView textViewDistance = (TextView) convertView.findViewById(R.id.Lv_Dist);
-            ToggleButton toggleButtonAvailable = (ToggleButton) convertView.findViewById(R.id.toggleButtonAvailable);
+            ImageView imageView =  convertView.findViewById(R.id.ambulanceImageView);
+            TextView textViewMatricule =  convertView.findViewById(R.id.ambulanceMatriculeTextView);
+            TextView textViewDistance =  convertView.findViewById(R.id.Lv_Dist);
+            ToggleButton toggleButtonAvailable =  convertView.findViewById(R.id.toggleButtonAvailable);
             RatingBar tb = convertView.findViewById(R.id.lv_ratingBar);
 
             // get image from the api
@@ -123,4 +115,3 @@ public class AmbulanceListActivity extends AppCompatActivity {
     }
 
 }
-// for commit

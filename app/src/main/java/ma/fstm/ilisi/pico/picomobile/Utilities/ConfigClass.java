@@ -35,26 +35,7 @@ public class ConfigClass {
     //20: Buildings
     public static float zoomBuildings = 20f;
     //get Image from url
-    public static void ImageFromURLtoView(String role,String id,ImageView im){
 
-
-            Thread thread = new Thread(new Runnable() {
-
-                @Override
-                public void run() {
-                    try {
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-
-            });
-        thread.start();
-        // else return ;
-
-
-    }
 
     public static String buildUrl(String role, String id){
         switch (role){

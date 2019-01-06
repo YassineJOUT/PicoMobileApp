@@ -20,16 +20,12 @@ public class SignupActivity extends AppCompatActivity {
         ActivitySignUpBinding activitySignUpBinding = DataBindingUtil.setContentView(this, R.layout.activity_sign_up);
         activitySignUpBinding.setViewModel(new SignupViewModel());
         activitySignUpBinding.executePendingBindings();
-        findViewById(R.id.link_signin).setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                // Start the Sign in activity
-                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                startActivity(intent);
-                //finish();
-                //overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-            }
+        findViewById(R.id.link_signin).setOnClickListener(v -> {
+            // Start the Sign in activity
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(intent);
+            //finish();
+            //overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
         });
     }
 

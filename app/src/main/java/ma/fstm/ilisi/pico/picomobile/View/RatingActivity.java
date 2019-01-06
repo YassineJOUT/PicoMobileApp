@@ -31,66 +31,38 @@ public class RatingActivity extends AppCompatActivity {
         sock = Sockets.getInstance();
 
         String alarm_id = getIntent().getStringExtra("alarm_id");
-        rb.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
-            @Override
-            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                //CITIZEN_FEEDBACK_EVENT (alarm_id,percentage,comment) to send
-                FBrating = rating;
+        rb.setOnRatingBarChangeListener((ratingBar, rating, fromUser) -> {
+            FBrating = rating;
 
 
-            }
         });
 
-        findViewById(R.id.sendFB).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                JSONObject obj = new JSONObject();
-                try {
-                    String comment = ((EditText)findViewById(R.id.fb_Comment)).getText().toString();
-                    obj.put("percentage",FBrating/5);
-                    obj.put("comment",comment);
-                    obj.put("alarm_id",alarm_id);
+        findViewById(R.id.sendFB).setOnClickListener(v -> {
+            JSONObject obj = new JSONObject();
+            try {
+                String comment = ((EditText)findViewById(R.id.fb_Comment)).getText().toString();
+                obj.put("percentage",FBrating/5);
+                obj.put("comment",comment);
+                obj.put("alarm_id",alarm_id);
 
-                    sock.emit("CITIZEN_FEEDBACK_EVENT", obj);
-                    RatingActivity.this.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            new AlertDialog.Builder(RatingActivity.this)
-                                    .setIcon(android.R.drawable.ic_dialog_alert)
-                                    .setTitle("Thank you")
-                                    .setMessage("We thank you for your feed back, Return to the main page")
-                                    .setPositiveButton("OK", new DialogInterface.OnClickListener()
-                                    {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            startAct();
-                                        }
-
-                                    })
-                                    .show();
-                        }
-                    });
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                sock.emit("CITIZEN_FEEDBACK_EVENT", obj);
+                RatingActivity.this.runOnUiThread(() -> new AlertDialog.Builder(RatingActivity.this)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setTitle("Thank you")
+                        .setMessage("We thank you for your feed back, Return to the main page")
+                        .setPositiveButton("OK", (dialog, which) -> startAct())
+                        .show());
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
         });
-        findViewById(R.id.cancelFB).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startAct();
-
-            }
-        });
+        findViewById(R.id.cancelFB).setOnClickListener(v -> startAct());
     }
     private void startAct(){
-        this.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Intent intent =new Intent(RatingActivity.this,MapsActivity.class);
-                intent.putExtra("feedBack","true");
-                RatingActivity.this.startActivity(intent);
-            }
+        this.runOnUiThread(() -> {
+            Intent intent =new Intent(RatingActivity.this,MapsActivity.class);
+            intent.putExtra("feedBack","true");
+            RatingActivity.this.startActivity(intent);
         });
     }
 }
