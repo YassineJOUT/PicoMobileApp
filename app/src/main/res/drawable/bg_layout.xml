@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@color/colorAccent"/>
+    <item android:drawable="@color/secondCol"/>
     <item android:top="200dp"
         android:bottom="-300dp"
         android:left="0dp"
@@ -12,7 +12,7 @@
             <shape
                 android:shape="rectangle">
                 <solid
-                    android:color="@color/colorNoInternetGradStartH"/>
+                    android:color="@color/thirdCol"/>
             </shape>
         </rotate>
     </item>

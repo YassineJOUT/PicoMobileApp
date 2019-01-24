@@ -18,7 +18,6 @@ public class Sockets {
             } catch (URISyntaxException e) {
                 e.printStackTrace();
             }
-
         }
         return mysocket;
     }

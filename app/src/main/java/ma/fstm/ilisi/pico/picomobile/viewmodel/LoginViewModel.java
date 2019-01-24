@@ -27,13 +27,13 @@ import ma.fstm.ilisi.pico.picomobile.View.LoginActivity;
  * @author      Yassine jout
  * @version     1.0
  */
-public class LoginViewModel extends BaseObservable {
+public class LoginViewModel extends ViewModel {
 
     private Citizen citizen;
     private String errorMessage = "Phone Number or Password not valid";
 
 
-    @Bindable
+
     public String toastMessage = null;
     /**
      * Method getToastMessage
@@ -46,7 +46,7 @@ public class LoginViewModel extends BaseObservable {
 
     private void setToastMessage(String toastMessage) {
         this.toastMessage = toastMessage;
-        notifyPropertyChanged(BR.toastMessage);
+        //notifyPropertyChanged(BR.toastMessage);
     }
     /**
      * LoginViewModel Constructor
@@ -82,6 +82,7 @@ public class LoginViewModel extends BaseObservable {
      *
      */
     public void onLoginClicked(View view) {
+
         // if typed data is valid
         if (citizen.isDataInputValidForLogin()){
             // call Sign In function
