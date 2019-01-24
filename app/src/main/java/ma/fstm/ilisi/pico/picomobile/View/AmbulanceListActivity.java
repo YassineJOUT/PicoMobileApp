@@ -20,8 +20,10 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import java.io.InputStream;
+import java.math.RoundingMode;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import ma.fstm.ilisi.pico.picomobile.Model.Ambulance;
@@ -102,9 +104,12 @@ public class AmbulanceListActivity extends AppCompatActivity {
             loc.setLatitude(ambulances.get(position).getLatitude());
             loc.setLatitude(ambulances.get(position).getLongitude());
             Float distance = 0f;
+
+            DecimalFormat df = new DecimalFormat("##.##");
+            df.setRoundingMode(RoundingMode.DOWN);
             if(CitizenLocation != null){
                 distance = loc.distanceTo(CitizenLocation);
-                textViewDistance.setText(distance+"");
+                textViewDistance.setText(df.format(distance)+" m");
             }
             if(ambulances.get(position).getAvailable())
                 toggleButtonAvailable.setBackgroundColor(Color.parseColor("#19d32f"));

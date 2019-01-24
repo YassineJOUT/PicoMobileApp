@@ -2,11 +2,16 @@
 <resources>
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorAccent">#d81b60</color>
     <color name="primary">#E43F3F</color>
     <color name="primary_dark">#e12929</color>
     <color name="primary_darker">#CC1D1D</color>
     <color name="accent">#FFFFFF</color>
+
+    <color name="firstCol">#c40910</color>
+    <color name="secondCol">#b7aaad</color>
+    <color name="thirdCol">#e0dbdc</color>
+
 
     <color name="black">#000000</color>
     <color name="jet">#222222</color>

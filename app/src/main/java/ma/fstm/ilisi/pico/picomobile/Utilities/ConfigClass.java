@@ -15,6 +15,13 @@ import ma.fstm.ilisi.pico.picomobile.Repository.PicoWebRestClient;
  * this class contains config data
  */
 public class ConfigClass {
+    //for test
+    // user name
+    public static String fullName = "jout yassine";
+    //password
+    public static String password = "yassine";
+    //phone number
+    public static String phoneNumber = "0612938342" ;
     // Authorization token
     public static String token = "";
     // true if a citizen is logged in
@@ -39,6 +46,7 @@ public class ConfigClass {
 
     public static String buildUrl(String role, String id){
         switch (role){
+
             case "citizens" : return BASE_URL+"citizens/image/"+id+".jpg";
             case "drivers" : return BASE_URL+"drivers/image/"+id+".jpg";
             case "ambulances" : return BASE_URL+"ambulances/image/"+id+".jpg";

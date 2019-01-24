@@ -34,7 +34,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mContext = this;
+         mContext = this;
          noInternetDialog = new NoInternetDialog.Builder(this).build();
 
         ActivityLoginBinding activityLoginBinding;
@@ -60,6 +60,20 @@ public class LoginActivity extends AppCompatActivity {
            buildDialog(this).show();
            hideKeyBoard();
        }
+        //changes
+       if(ConfigClass.fullName == ""){
+           ((EditText)findViewById(R.id.phoneNumber)).setText("");
+           ((EditText)findViewById(R.id.password)).setText("");
+        }
+        LoginViewModel loginViewModel = ViewModelProviders.of(LoginActivity.this).get(LoginViewModel.class);
+
+        // fire onCLick btn
+        findViewById(R.id.sign_in_button).setOnClickListener((view)->{
+            loginViewModel.afterPhoneTextChanged(((EditText)findViewById(R.id.phoneNumber)).getText());
+            loginViewModel.afterPasswordTextChanged(((EditText)findViewById(R.id.password)).getText());
+            loginViewModel.onLoginClicked(view);
+        });
+        findViewById(R.id.sign_in_button).requestFocus();
     }
     private void hideKeyBoard(){
         View view =        LoginActivity.this.getCurrentFocus();

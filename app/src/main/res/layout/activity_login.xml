@@ -15,6 +15,7 @@
         android:layout_height="match_parent">
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 xmlns:tools="http://schemas.android.com/tools"
+    android:focusableInTouchMode="true"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
 android:gravity="center_horizontal"
@@ -67,7 +68,6 @@ tools:context=".View.LoginActivity">
                 android:id="@+id/phoneNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:afterTextChanged="@{(editable)->viewModel.afterPhoneTextChanged(editable)}"
                 android:hint="@string/prompt_number"
                 android:maxLines="1"
                 android:singleLine="true"
@@ -83,7 +83,6 @@ tools:context=".View.LoginActivity">
                 android:id="@+id/password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:afterTextChanged="@{(editable)->viewModel.afterPasswordTextChanged(editable)}"
                 android:hint="@string/prompt_password"
                 android:imeActionId="6"
                 android:imeActionLabel="@string/action_sign_in_short"
@@ -103,8 +102,11 @@ tools:context=".View.LoginActivity">
             android:layout_marginTop="16dp"
             android:text="@string/action_sign_in"
             android:textStyle="bold"
-            android:onClick="@{(v)-> viewModel.onLoginClicked(v)}"
-            bind:toastMessage="@{viewModel.toastMessage}"/>
+
+            bind:toastMessage="@{viewModel.toastMessage}">
+            <requestFocus />
+        </Button>
+
         <TextView android:id="@+id/link_signup"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"

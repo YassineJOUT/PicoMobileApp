@@ -15,8 +15,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginStart="0dp"
         android:layout_marginLeft="0dp"
-        android:layout_marginTop="0dp"
-        app:srcCompat="@drawable/amb5" />
+        android:layout_marginTop="0dp" />
 
 
     <TextView
@@ -26,9 +25,9 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_marginTop="321dp"
-        android:layout_marginEnd="154dp"
-        android:layout_marginRight="154dp"
+        android:layout_marginTop="325dp"
+        android:layout_marginEnd="156dp"
+        android:layout_marginRight="156dp"
         android:text="Hello world !" />
 
     <Button
@@ -77,9 +76,9 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="45dp"
-        android:layout_marginLeft="45dp"
-        android:layout_marginTop="284dp"
+        android:layout_marginStart="149dp"
+        android:layout_marginLeft="149dp"
+        android:layout_marginTop="457dp"
         android:isIndicator="true"
         android:numStars="5"
         android:stepSize="1.0" />

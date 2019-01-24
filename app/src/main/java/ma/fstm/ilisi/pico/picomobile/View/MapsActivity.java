@@ -48,7 +48,9 @@ import com.loopj.android.http.RequestParams;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.math.RoundingMode;
 import java.net.URISyntaxException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -165,9 +167,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     nearestHospital = hmHospitals.entrySet().iterator().next();
                                 }
                                 if (nearestHospital != null) {
+                                    DecimalFormat df = new DecimalFormat("##.##");
+                                    df.setRoundingMode(RoundingMode.DOWN);
                                     setBottomSheetContent("hospital");
                                     ((TextView) findViewById(R.id.bs_hospitalName)).setText(nearestHospital.getKey().getName());
-                                    ((TextView) findViewById(R.id.bs_distance)).setText("Dist : " + nearestHospital.getValue() + "");
+                                    ((TextView) findViewById(R.id.bs_distance)).setText("Dist : " + df.format(nearestHospital.getValue()) + " m");
                                     ambulanceViewModel = ViewModelProviders.of(MapsActivity.this).get(AmbulanceViewModel.class);
 
                                     Hospital h = nearestHospital.getKey();
@@ -249,7 +253,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 ((TextView)findViewById(R.id.bs_Subtitle)).setText("Driver");
                 (findViewById(R.id.bs_distance)).setVisibility(View.INVISIBLE);
                 //
-                ((TextView)findViewById(R.id.bs_hospitalName)).setText("Status :  Mission en cours ..");
+                ((TextView)findViewById(R.id.bs_hospitalName)).setText("Status :  On going mission ..");
                 // set button to disabled and invisible
                 (findViewById(R.id.bs_Book)).setVisibility(View.INVISIBLE);
                 (findViewById(R.id.bs_Book)).setEnabled(false);
@@ -406,7 +410,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
             });
         socket.connect();
-
     }
 
     @Override
@@ -415,7 +418,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         String resumedFromFb = intent.getStringExtra("feedBack");
         Log.e("resumedFromFb 1",resumedFromFb+"");
         if(mMap != null){
-
             if(resumedFromFb != null)
                 if(resumedFromFb.equalsIgnoreCase("true")){
 
@@ -428,9 +430,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             polylineArray[i].remove();
                     }
                     onMapReady(mMap);
-
                 }
-
         }
         driver =  intent.getParcelableExtra("driver_info");
         boolean isbooked = intent.getBooleanExtra("isbooked",false);
@@ -439,21 +439,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if(driver != null){
             setBottomSheetContent("driver");
             Log.e("new intent ","driver");
-
         }
-
-
-
-
     }
-
-
-
     /**
      *
      * getHospital with the nearest distance
      */
-
     public LinkedHashMap<Hospital, Float> sortHashMapByValues(
             HashMap<Hospital, Float>  passedMap) {
         List<Hospital> mapKeys = new ArrayList<>(passedMap.keySet());
@@ -564,8 +555,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         hospitalMarkerHash.put(
                                 mMap.addMarker(
                                         new MarkerOptions()
-                                                .position(new LatLng(h.getLatitude(),h.getLongitude()))
-                                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+                                                .position(
+                                                        new LatLng(h.getLatitude(),h.getLongitude()))
+                                                .icon(BitmapDescriptorFactory.
+                                                        defaultMarker(BitmapDescriptorFactory.HUE_RED))
                                                 .title(h.getName())),h);
                     }
                 }
@@ -600,7 +593,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
     }
 
     @Override
@@ -631,11 +623,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
         }
     }
-
     @Override
     public boolean onMarkerClick(Marker marker) {
-
-
         ambulanceViewModel = ViewModelProviders.of(this).get(AmbulanceViewModel.class);
         Intent intent = new Intent(this, AmbulanceListActivity.class);
         hospitalMarkerHash.get(marker);
