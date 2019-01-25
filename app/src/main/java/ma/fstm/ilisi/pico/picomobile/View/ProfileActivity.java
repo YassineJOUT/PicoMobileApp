@@ -1,5 +1,6 @@
 package ma.fstm.ilisi.pico.picomobile.View;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -11,6 +12,8 @@ import android.widget.ViewSwitcher;
 
 import ma.fstm.ilisi.pico.picomobile.R;
 import ma.fstm.ilisi.pico.picomobile.Utilities.ConfigClass;
+import ma.fstm.ilisi.pico.picomobile.Utilities.DownloadImageTask;
+import ma.fstm.ilisi.pico.picomobile.viewmodel.ProfileViewModel;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -20,10 +23,27 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
         // hide Edit text
 
-        ((TextView)findViewById(R.id.textFullName)).setText(ConfigClass.fullName);
-        ((TextView)findViewById(R.id.textPhone)).setText(ConfigClass.phoneNumber);;
-        //new DownloadImageTask( findViewById(R.id.bs_imageView))
-         //       .execute(ConfigClass.buildUrl("citizen", ));
+
+        // get user data :
+        ProfileViewModel  profileViewModel =
+                ViewModelProviders.of(this).get(ProfileViewModel.class);
+
+
+        if(profileViewModel != null){
+            profileViewModel.retreiveProfileUser().observe(this,(data)->{
+                if(data != null){
+                    ConfigClass.fullName = data.get(0);
+                    ((TextView)findViewById(R.id.textFullName)).setText(ConfigClass.fullName);
+                    Log.e("name",data.get(0));
+                    new DownloadImageTask( findViewById(R.id.imgProfile))
+                    .execute(ConfigClass.buildUrl("citizens",data.get(1)));
+                }
+            });
+        }
+
+        ((TextView)findViewById(R.id.textPhone)).setText(ConfigClass.phoneNumber);
+
+        //
 
         findViewById(R.id.btnImageUpload).setOnClickListener((view)->{
             update();

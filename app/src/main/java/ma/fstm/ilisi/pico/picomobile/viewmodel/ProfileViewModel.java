@@ -3,17 +3,15 @@ package ma.fstm.ilisi.pico.picomobile.viewmodel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
-import android.util.Log;
-
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Type;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
 import ma.fstm.ilisi.pico.picomobile.Repository.PicoWebRestClient;
@@ -62,13 +60,13 @@ public class ProfileViewModel extends ViewModel {
         }
         return data;
     }
-    public LiveData<Boolean> retreiveProfileUser()  {
-        final MutableLiveData<Boolean> data = new MutableLiveData<>();
+    public LiveData<List<String>> retreiveProfileUser()  {
+        final MutableLiveData<List<String>> data = new MutableLiveData<>();
         if(ConfigClass.isLoggedIn){
 
             PicoWebRestClient.setUp("Authorization",ConfigClass.token);
 
-            PicoWebRestClient.get("hospitals/citizens/", null,
+            PicoWebRestClient.get("citizens/data", null,
                     new JsonHttpResponseHandler() {
 
                         @Override
@@ -78,7 +76,7 @@ public class ProfileViewModel extends ViewModel {
                             try {
 
                                 errorResponse.getString(0);
-                                data.setValue(false);
+                                data.setValue(null);
 
                             } catch (JSONException e) {
 
@@ -89,8 +87,15 @@ public class ProfileViewModel extends ViewModel {
                         public void onSuccess(int statusCode, Header[] headers, JSONObject responseString) {
                             try {
 
-                                data.setValue(true);
-                                //   Log.e("Response in success" , hospitals.get(1).toString());
+                                String name = (String) responseString.get("full_name");
+                                String id = (String) responseString.get("_id");
+
+                                ArrayList<String> arrayList = new ArrayList<>();
+
+                                arrayList.add(name);
+                                arrayList.add(id);
+
+                                data.setValue(arrayList);
 
                             } catch (Exception e) {
 

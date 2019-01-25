@@ -17,7 +17,7 @@ import ma.fstm.ilisi.pico.picomobile.Repository.PicoWebRestClient;
 public class ConfigClass {
     //for test
     // user name
-    public static String fullName = "jout yassine";
+    public static String fullName = "";
     //password
     public static String password = "yassine";
     //phone number
