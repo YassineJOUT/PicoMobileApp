@@ -4,6 +4,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,26 +21,27 @@ import ma.fstm.ilisi.pico.picomobile.Utilities.ConfigClass;
 public class ProfileViewModel extends ViewModel {
 
 
-    public LiveData<Boolean> ModifyUserData()  {
+    public LiveData<Boolean> ModifyUserPassword(String nvPassword)  {
         final MutableLiveData<Boolean> data = new MutableLiveData<>();
         if(ConfigClass.isLoggedIn){
 
             PicoWebRestClient.setUp("Authorization",ConfigClass.token);
+            PicoWebRestClient.setUp("content-type","application/x-www-form-urlencoded");
+            RequestParams params = new RequestParams();
 
-            PicoWebRestClient.post("hospitals/citizens/", null,
+
+            params.put("password",nvPassword);
+            PicoWebRestClient.patch("/citizens/password", params,
                     new JsonHttpResponseHandler() {
-
                         @Override
                         public void onFailure(int statusCode, Header[] headers,
                                               Throwable throwable, JSONArray errorResponse) {
                             super.onFailure(statusCode, headers, throwable, errorResponse);
                             try {
-
                                 errorResponse.getString(0);
                                 data.setValue(false);
 
                             } catch (JSONException e) {
-
                                 e.printStackTrace();
                             }
                         }
@@ -56,7 +58,6 @@ public class ProfileViewModel extends ViewModel {
                             }
                         }
                     });
-
         }
         return data;
     }

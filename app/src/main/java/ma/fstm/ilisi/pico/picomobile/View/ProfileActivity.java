@@ -8,6 +8,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import ma.fstm.ilisi.pico.picomobile.R;
@@ -49,6 +50,7 @@ public class ProfileActivity extends AppCompatActivity {
             update();
         });
 
+        findViewById(R.id.btnSave).setEnabled(false);
         ((EditText)findViewById(R.id.rptnvPassword)).addTextChangedListener(new TextWatcher(){
 
             @Override
@@ -75,15 +77,44 @@ public class ProfileActivity extends AppCompatActivity {
                     (findViewById(R.id.rptnvPassword)).setBackgroundResource(0);
                     (findViewById(R.id.nvPassword)).setBackgroundResource(R.drawable.edittext_bgvert);
                     (findViewById(R.id.rptnvPassword)).setBackgroundResource(R.drawable.edittext_bgvert);
+                    if(!((EditText)findViewById(R.id.edtFulName)).getText().equals(""))
+                        findViewById(R.id.btnSave).setEnabled(true);
                 }
                 if(!nvPass.equals(reptnvPass) ){
                     (findViewById(R.id.nvPassword)).setBackgroundResource(0);
                     (findViewById(R.id.rptnvPassword)).setBackgroundResource(0);
                     (findViewById(R.id.nvPassword)).setBackgroundResource(R.drawable.edittext_bgrouge);
                     (findViewById(R.id.rptnvPassword)).setBackgroundResource(R.drawable.edittext_bgrouge);
+                        findViewById(R.id.btnSave).setEnabled(false);
+
                 }
             }
         });
+
+        findViewById(R.id.btnSave).setOnClickListener((view)->{
+            if(findViewById(R.id.btnSave).isEnabled()){
+                //changing mdp
+                if(profileViewModel != null){
+                    String nvPassword = ((EditText)findViewById(R.id.edtFulName)).getText().toString();
+                    if(!nvPassword.equals(R.id.edtFulName))
+                        if(ConfigClass.password.equals(((EditText)findViewById(R.id.ancPassword)).getText().toString()))
+                        profileViewModel.ModifyUserPassword(nvPassword).observe(this,(data)->{
+                            if(data){
+                                Toast.makeText(ProfileActivity.this,
+                                        "The password has being changed successfully",
+                                        Toast.LENGTH_LONG).show();
+                                findViewById(R.id.btnImageUpload).performClick();
+                            }
+                        });
+                        else
+                            Toast.makeText(ProfileActivity.this,
+                                    "The password is not correct",
+                                    Toast.LENGTH_LONG).show();
+                }
+
+            }
+        });
+
     }
 
     public void update() {
