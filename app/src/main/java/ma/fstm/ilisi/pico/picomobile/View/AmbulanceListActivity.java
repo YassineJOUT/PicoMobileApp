@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -84,6 +85,7 @@ public class AmbulanceListActivity extends AppCompatActivity {
         public View getView(int position, View convertView, ViewGroup parent) {
 
             convertView = getLayoutInflater().inflate(R.layout.ambulances_list_view, null);
+
             ImageView imageView =  convertView.findViewById(R.id.ambulanceImageView);
             TextView textViewMatricule =  convertView.findViewById(R.id.ambulanceMatriculeTextView);
             TextView textViewDistance =  convertView.findViewById(R.id.Lv_Dist);
