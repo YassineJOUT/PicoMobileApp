@@ -1,23 +1,48 @@
 package ma.fstm.ilisi.pico.picomobile.View;
 
+import android.annotation.SuppressLint;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.ActivityNotFoundException;
+import android.content.Context;
+import android.content.CursorLoader;
+import android.content.Intent;
+import android.database.Cursor;
+import android.media.Image;
+import android.net.Uri;
+import android.provider.DocumentsContract;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
+import com.koushikdutta.ion.Response;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
+import java.util.concurrent.Future;
+
 import ma.fstm.ilisi.pico.picomobile.R;
 import ma.fstm.ilisi.pico.picomobile.Utilities.ConfigClass;
 import ma.fstm.ilisi.pico.picomobile.Utilities.DownloadImageTask;
+import ma.fstm.ilisi.pico.picomobile.Utilities.RealPathUtil;
 import ma.fstm.ilisi.pico.picomobile.viewmodel.ProfileViewModel;
 
 public class ProfileActivity extends AppCompatActivity {
 
+    String path;
+    ImageView img;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,7 +115,14 @@ public class ProfileActivity extends AppCompatActivity {
                 }
             }
         });
-
+        findViewById(R.id.imgProfile).setOnClickListener((view)->{
+            Intent fintent = new Intent(Intent.ACTION_GET_CONTENT);
+            fintent.setType("image/jpeg");
+            try {
+                startActivityForResult(fintent, 100);
+            } catch (ActivityNotFoundException e) {
+            }
+        });
         findViewById(R.id.btnSave).setOnClickListener((view)->{
             if(findViewById(R.id.btnSave).isEnabled()){
                 //changing mdp
@@ -100,6 +132,26 @@ public class ProfileActivity extends AppCompatActivity {
                         if(ConfigClass.password.equals(((EditText)findViewById(R.id.ancPassword)).getText().toString()))
                         profileViewModel.ModifyUserPassword(nvPassword).observe(this,(data)->{
                             if(data){
+                                if(path != null){
+                                    File f = new File(path);
+
+                                    Log.e("path up",path);
+                                    Future uploading = Ion.with(ProfileActivity.this)
+                                            .load("patch","http://pico.ossrv.nl:9090/api/citizens/image").
+                                                    addHeader("Authorization",ConfigClass.token)
+                                            .setMultipartFile("image", f)
+                                            .asString()
+                                            .withResponse()
+                                            .setCallback((e, result)-> {
+                                                try {
+                                                    JSONObject jobj = new JSONObject(result.getResult());
+                                                    Toast.makeText(getApplicationContext(), jobj.getString("msg"), Toast.LENGTH_SHORT).show();
+                                                } catch (JSONException e1) {
+                                                    e1.printStackTrace();
+                                                }
+                                            });
+                                }
+
                                 Toast.makeText(ProfileActivity.this,
                                         "The password has being changed successfully",
                                         Toast.LENGTH_LONG).show();
@@ -111,10 +163,23 @@ public class ProfileActivity extends AppCompatActivity {
                                     "The password is not correct",
                                     Toast.LENGTH_LONG).show();
                 }
-
             }
         });
 
+    }
+    @SuppressLint("WrongViewCast")
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (data == null)
+            return;
+        switch (requestCode) {
+            case 100:
+                if (resultCode == RESULT_OK) {
+                    path = RealPathUtil.getRealPath(this,data.getData());//Log.d("path",path);
+                    ((ImageView)findViewById(R.id.imgProfile)).setImageURI(data.getData());
+                   // upload.setVisibility(View.VISIBLE);
+
+                }
+        }
     }
 
     public void update() {
@@ -128,4 +193,6 @@ public class ProfileActivity extends AppCompatActivity {
         //TextView myTV = (TextView) switcher.findViewById(R.id);
         //myTV.setText("value");
     }
+
+
 }
