@@ -183,7 +183,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     public void update() {
-        ViewSwitcher switcher = (ViewSwitcher) findViewById(R.id.my_switcher);
+        ViewSwitcher switcher = findViewById(R.id.my_switcher);
 
 
         ((EditText) findViewById(R.id.edtFulName)).setText(((TextView)findViewById(R.id.textFullName)).getText());

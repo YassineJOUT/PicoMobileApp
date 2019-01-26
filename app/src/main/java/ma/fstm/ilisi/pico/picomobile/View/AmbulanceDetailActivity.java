@@ -9,6 +9,8 @@ import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -169,7 +171,42 @@ public class AmbulanceDetailActivity extends AppCompatActivity {
             });
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.home_menu, menu);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.profile:
+                // do your code
+                startActivity(new Intent(this,ProfileActivity.class));
+                return true;
+            case R.id.settings:
+                // do your code
+                return true;
+            case R.id.logout:
 
+            {
+                new AlertDialog.Builder(this)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setTitle("Closing Pico")
+                        .setMessage("Are you sure you want to logout and exit the app ?")
+                        .setPositiveButton("Yes", (dialog, which) -> {
+                            ConfigClass.isLoggedIn = false ;
+                            ConfigClass.token = "";
+                            finish();
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
+            }
+            // do your code
+            return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
 }
 
