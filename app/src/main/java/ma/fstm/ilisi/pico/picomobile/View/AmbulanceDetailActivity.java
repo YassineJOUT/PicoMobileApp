@@ -183,7 +183,8 @@ public class AmbulanceDetailActivity extends AppCompatActivity {
                 // do your code
                 startActivity(new Intent(this,ProfileActivity.class));
                 return true;
-            case R.id.settings:
+            case R.id.nearestHospital:
+                startActivity(new Intent(this,MapsActivity.class));
                 // do your code
                 return true;
             case R.id.logout:
