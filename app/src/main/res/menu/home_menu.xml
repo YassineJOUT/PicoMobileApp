@@ -3,7 +3,7 @@
     <item android:id="@+id/profile"
         android:title="@string/profile" />
     <item android:id="@+id/nearestHospital"
-        android:title="@string/settings" />
+        android:title="@string/nearestHospital" />
     <item android:id="@+id/logout"
         android:title="@string/logout" />
 </menu>
