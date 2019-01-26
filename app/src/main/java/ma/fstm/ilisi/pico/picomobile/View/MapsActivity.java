@@ -127,7 +127,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         isAmbBooked = false ;
 
         sheetBehavior = BottomSheetBehavior.from(findViewById(R.id.bottom_sheet));
-
        Button  bs_btn_book = findViewById(R.id.bs_Book);
         findViewById(R.id.bs_Cancel).setVisibility(View.INVISIBLE);
         findViewById(R.id.bs_Cancel).setEnabled(false);
@@ -655,7 +654,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 // do your code
                 startActivity(new Intent(this,ProfileActivity.class));
                 return true;
-            case R.id.settings:
+            case R.id.nearestHospital:
+                if(sheetBehavior != null)
+                sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                 // do your code
                 return true;
             case R.id.logout:

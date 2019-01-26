@@ -61,10 +61,7 @@ public class LoginActivity extends AppCompatActivity {
            hideKeyBoard();
        }
         //changes
-       if(ConfigClass.fullName == ""){
-           ((EditText)findViewById(R.id.phoneNumber)).setText("");
-           ((EditText)findViewById(R.id.password)).setText("");
-        }
+
         LoginViewModel loginViewModel = ViewModelProviders.of(LoginActivity.this).get(LoginViewModel.class);
 
         // fire onCLick btn

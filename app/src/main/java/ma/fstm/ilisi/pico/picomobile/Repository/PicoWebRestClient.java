@@ -52,6 +52,18 @@ public class PicoWebRestClient  {
         client.post(getAbsoluteUrl(url), params, responseHandler);
     }
     /**
+     * patch function
+     * this method is a http post implementation to patch parameters to the api
+     * @param url the url to the api
+     * @param params parameters to encapsulate in the http packet
+     * @param responseHandler the http response object
+     */
+    public static void patch(String url, RequestParams params,
+                            AsyncHttpResponseHandler responseHandler) {
+
+        client.patch(getAbsoluteUrl(url), params, responseHandler);
+    }
+    /**
      * getAbsoluteUrl function
      * this method concatenates the base url with the relative URL
      * @param relativeUrl the relative url to the api call
