@@ -136,10 +136,15 @@ public class AmbulanceDetailActivity extends AppCompatActivity {
         Button detailBookButton =  findViewById(R.id.detailBookButton);
         Double rate = ambulance.getRating();
         RatingBar tb = findViewById(R.id.ratingBar);
-        if(rate == null)
+        if(rate == null){
             tb.setRating(0);
-        else
+            ((TextView)findViewById(R.id.ratingValue)).setText("(0)");
+        }
+        else{
             tb.setRating(Float.valueOf(rate+"")*5);
+            ((TextView)findViewById(R.id.ratingValue)).setText("("+Float.valueOf(rate+"")+")");
+        }
+
         detailMatriculeTextView.setText(ambulance.getRegistrationNumber());
         if(!ambulance.getAvailable()){
             detailBookButton.setEnabled(false);
